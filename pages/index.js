@@ -1,5 +1,9 @@
-export default function Home() {
+import { Header } from "../components/Header"
+
+export default function IndexPage() {
   return (
-    <>BRUH FROM INDEX.JS</>
+    <>
+      <Header />
+    </>
   );
 }
