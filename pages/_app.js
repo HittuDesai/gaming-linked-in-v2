@@ -1,5 +1,6 @@
 import { RecoilRoot } from "recoil";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { CssBaseline } from "@mui/material";
 
 function App({ Component }) {
   const darkTheme = createTheme({
@@ -11,6 +12,7 @@ function App({ Component }) {
   return (
     <ThemeProvider theme={darkTheme}>
       <RecoilRoot>
+        <CssBaseline />
         <Component />
       </RecoilRoot>
     </ThemeProvider>

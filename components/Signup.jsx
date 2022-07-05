@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Group, TextInput, PasswordInput, Text } from '@mantine/core';
-import { GiCancel } from 'react-icons/gi'
-import { FaGoogle } from 'react-icons/fa'
 
 import { useSetRecoilState } from 'recoil';
-import signup from '../atoms/signupAtom';
 
 import { db } from "../firebase"
 import { collection, getDocs, doc, setDoc } from "firebase/firestore"
@@ -78,7 +74,7 @@ function SignUp() {
 
     return (
         <React.Fragment>
-            <Group style={{width: "100%", height:"100%"}} p={20} position="center">
+            {/* <Group style={{width: "100%", height:"100%"}} p={20} position="center">
                 <form style={{width: "90%", height:"100%"}}>
                     <TextInput
                     required
@@ -127,7 +123,7 @@ function SignUp() {
                         <Button onClick={() => setWantsToSignUp(false)} style={{width: "47.4%"}}><GiCancel /></Button>
                     </Group>
                 </form>
-            </Group>
+            </Group> */}
         </React.Fragment>
     );
 }

@@ -13,7 +13,7 @@ export function Header() {
     const currentUserID = useRecoilValue(userid);
 
     const HeaderWithoutSession = () => (
-        <AppBar>
+        <AppBar position="fixed">
             <Grid container direction="row" alignItems="center" justifyContent="space-between" padding="1rem">
                 <SportsEsportsIcon />
                 {(wantsToSignin || wantsToSignup) ? 
@@ -24,7 +24,7 @@ export function Header() {
                     <Button variant="text" onClick={() => setWantsToSignin(true)}>
                         Sign In
                     </Button>
-                    <Button variant="outlined" onClick={() => setWantsToSignup(true)}>
+                    <Button variant="contained" onClick={() => setWantsToSignup(true)}>
                         Sign Up
                     </Button>
                 </div>}
