@@ -1,20 +1,24 @@
 import React, { useState } from 'react'
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "firebase/auth";
 import { Button, Box, Grid, TextField, Typography } from '@mui/material';
 
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { wantsToSigninBool } from '../atoms/loginAtom';
-import { userid } from '../atoms/userAtom';
+import { useSetRecoilState } from 'recoil';
+import { userdata, userid, username } from '../atoms/userAtom';
+
+import { auth, db } from '../firebase';
+import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, signOut } from "firebase/auth";
+import { doc, getDoc } from 'firebase/firestore';
+import { useRouter } from 'next/router';
 
 export function SignIn() {
+    const router = useRouter();
     const [signinEmail, setSigninEmail] = useState("");
     const [signinEmailError, setSigninEmailError] = useState("");
     const [signinPassword, setSigninPassword] = useState("");
     const [signinPasswordError, setSigninPasswordError] = useState("");
-    const setWantsToSignIn = useSetRecoilState(wantsToSigninBool);
     
-    const [currentUserID, setCurrentUserID] = useRecoilState(userid);
-    const auth = getAuth();
+    const setCurrentUserID = useSetRecoilState(userid);
+    const setCurrentUserData = useSetRecoilState(userdata);
+    const setCurrentUsername = useSetRecoilState(username);
 
     const handleSignIn = (event) => {
         event.preventDefault();
@@ -42,7 +46,9 @@ export function SignIn() {
         setPersistence(auth, browserSessionPersistence).then(() => {
             signInWithEmailAndPassword(auth, signinEmail, signinPassword)
             .then((userCredential) => {
-                setCurrentUserID(userCredential.user.uid);
+                const currentUserID = userCredential.user.uid;
+                setCurrentUserID(currentUserID);
+                router.replace(`/fetch/${currentUserID}`);
             })
             .catch((error) => {
                 const errorCode = error.code;

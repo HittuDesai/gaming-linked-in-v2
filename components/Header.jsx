@@ -76,7 +76,8 @@ export function Header() {
 
     return (
         <>
-        { !currentUserID ? <HeaderWithoutSession /> : <HeaderWithSession />}
+        {/* { !currentUserID ? <HeaderWithoutSession /> : <HeaderWithSession />} */}
+        <HeaderWithoutSession />
         </>
     );
 }
