@@ -15,7 +15,6 @@ import { Box } from '@mui/system';
 export function Header() {
     const router = useRouter();
     const asPath = router.asPath;
-    console.log(asPath);
     const [wantsToSignin, setWantsToSignin] = useRecoilState(wantsToSigninBool)
     const [wantsToSignup, setWantsToSignup] = useRecoilState(wantsToSignupBool)
     const currentUserID = useRecoilValue(userid);
