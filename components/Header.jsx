@@ -1,11 +1,12 @@
 import { AppBar, Button, Grid, IconButton, Typography } from '@mui/material';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import { wantsToSigninBool, wantsToSignupBool } from '../atoms/loginAtom';
-import { userid } from '../atoms/userAtom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { userid, wantsToSeeProfileBool } from '../atoms/userAtom';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase'
@@ -15,9 +16,16 @@ import { Box } from '@mui/system';
 export function Header() {
     const router = useRouter();
     const asPath = router.asPath;
+
+    const currentUserID = useRecoilValue(userid);
+    const [wantsToSeeProfile, setWantsToSeeProfile] = useRecoilState(wantsToSeeProfileBool);
     const [wantsToSignin, setWantsToSignin] = useRecoilState(wantsToSigninBool)
     const [wantsToSignup, setWantsToSignup] = useRecoilState(wantsToSignupBool)
-    const currentUserID = useRecoilValue(userid);
+
+    if(asPath.endsWith("profile") && !wantsToSeeProfile) {
+        const routes = router.asPath.split("/");
+        router.push(`/${routes[0]}`);
+    }
 
     const HeaderWithoutSession = () => (
         <AppBar position="static" sx={{marginBottom: "1rem"}}>
@@ -25,7 +33,7 @@ export function Header() {
                 <SportsEsportsIcon />
                 {(wantsToSignin || wantsToSignup) ? 
                 <Button variant="text" onClick={() => {setWantsToSignin(false);setWantsToSignup(false)}}>
-                        Cancel
+                    Cancel
                 </Button> : 
                 <div>
                     <Button variant="text" onClick={() => setWantsToSignin(true)}>
@@ -48,12 +56,24 @@ export function Header() {
     const WithSessionRight = () => (
         <Box>
             <Grid container direction="row" alignItems="center" justifyContent="center">
-                <IconButton onClick={() => setShowUserProfile(!showUserProfile)}>
-                    <AccountCircleRoundedIcon />
-                </IconButton>
-                <IconButton onClick={handleSignOut}>
+                {wantsToSeeProfile ? 
+                    <IconButton onClick={() => {
+                        setWantsToSeeProfile(false);
+                        const routes = router.asPath.split("/");
+                        router.push(`/${routes[0]}`);
+                    }}>
+                        <HomeIcon />
+                    </IconButton> :
+                    <IconButton onClick={() => {
+                        setWantsToSeeProfile(true);
+                        router.push(`${router.asPath}/profile`)
+                    }}>
+                        <AccountCircleRoundedIcon />
+                    </IconButton>
+                }
+                {/* <IconButton onClick={handleSignOut}>
                     <LogoutIcon />
-                </IconButton>
+                </IconButton> */}
             </Grid>
         </Box>
     );

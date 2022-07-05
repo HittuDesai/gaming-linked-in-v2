@@ -14,3 +14,8 @@ export const username = atom({
     key: 'username',
     default: null,
 });
+
+export const wantsToSeeProfileBool = atom({
+    key: 'wantsToSeeProfileBool',
+    default: false,
+});

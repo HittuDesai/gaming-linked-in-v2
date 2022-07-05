@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 
 import { useSetRecoilState } from "recoil";
-import { userdata, userid, username } from "../atoms/userAtom";
+import { userdata, userid, username } from "../../atoms/userAtom";
 
-import { db } from "../firebase"
+import { db } from "../../firebase"
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Grid, Typography } from "@mui/material";
 
-import { Feed } from "../components/Feed"
+import { Feed } from "../../components/Feed"
 
 export default function UserHomePage({ userFound, currentUserData }) {
     if(!userFound)
@@ -40,13 +40,13 @@ export default function UserHomePage({ userFound, currentUserData }) {
 }
 
 export async function getServerSideProps(context) {
-const { params } = context;
-const { username } = params;
+    const { params } = context;
+    const { username } = params;
 
-const usersCollectionReference = collection(db, "users");
-const usernameQuery = query(usersCollectionReference, where("username", "==", username));
-const querySnapshot = await getDocs(usernameQuery);
-const currentUserData = querySnapshot.docs[0].data();
+    const usersCollectionReference = collection(db, "users");
+    const usernameQuery = query(usersCollectionReference, where("username", "==", username));
+    const querySnapshot = await getDocs(usernameQuery);
+    const currentUserData = querySnapshot.docs[0].data();
 
     if(currentUserData)
         return {
