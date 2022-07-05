@@ -14,7 +14,6 @@ export function IndexSection() {
     const wantsToSignup = useRecoilValue(wantsToSignupBool);
 
     onAuthStateChanged(auth, (userCredentials) => {
-        console.log(userCredentials);
         if(!userCredentials)
             return;
         const currentUserID = userCredentials.uid;

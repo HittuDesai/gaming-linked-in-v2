@@ -1,3 +1,4 @@
+import { Header } from "../components/Header"
 import { RecoilRoot } from "recoil";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from "@mui/material";
@@ -13,6 +14,7 @@ function App({ Component, pageProps }) {
     <ThemeProvider theme={darkTheme}>
       <RecoilRoot>
         <CssBaseline />
+        <Header />
         <Component { ...pageProps } />
       </RecoilRoot>
     </ThemeProvider>

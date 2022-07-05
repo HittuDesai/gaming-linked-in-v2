@@ -4,7 +4,7 @@ import { username } from "../atoms/userAtom";
 export default function UserHomePage() {
     const currentUsername = useRecoilValue(username);
   return (
-    <>{currentUsername}</>
+    <div>{currentUsername}</div>
   );
 }
 
