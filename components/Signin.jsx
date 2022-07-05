@@ -2,11 +2,10 @@ import React, { useState } from 'react'
 import { Button, Box, Grid, TextField, Typography } from '@mui/material';
 
 import { useSetRecoilState } from 'recoil';
-import { userdata, userid, username } from '../atoms/userAtom';
+import { userid } from '../atoms/userAtom';
 
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, signOut } from "firebase/auth";
-import { doc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 
 export function SignIn() {
@@ -17,8 +16,6 @@ export function SignIn() {
     const [signinPasswordError, setSigninPasswordError] = useState("");
     
     const setCurrentUserID = useSetRecoilState(userid);
-    const setCurrentUserData = useSetRecoilState(userdata);
-    const setCurrentUsername = useSetRecoilState(username);
 
     const handleSignIn = (event) => {
         event.preventDefault();
