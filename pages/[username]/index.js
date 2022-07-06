@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { Feed } from "../../components/Feed"
+import { UploadModal } from "../../components/UploadModal";
 
 import { useSetRecoilState } from "recoil";
 import { userdata, userid, username } from "../../atoms/userAtom";
@@ -6,8 +8,6 @@ import { userdata, userid, username } from "../../atoms/userAtom";
 import { db } from "../../firebase"
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Grid, Typography } from "@mui/material";
-
-import { Feed } from "../../components/Feed"
 
 export default function UserHomePage({ userFound, currentUserData }) {
     if(!userFound)
@@ -33,9 +33,10 @@ export default function UserHomePage({ userFound, currentUserData }) {
 
 
     return (
-      <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
-          <Feed />
-      </Grid>
+        <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
+            <UploadModal />
+            <Feed />
+        </Grid>
     );
 }
 

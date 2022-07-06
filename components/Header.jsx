@@ -2,11 +2,13 @@ import { AppBar, Button, Grid, IconButton, Typography } from '@mui/material';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import HomeIcon from '@mui/icons-material/Home';
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import LogoutIcon from '@mui/icons-material/Logout';
 
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { wantsToSigninBool, wantsToSignupBool } from '../atoms/loginAtom';
 import { userid, wantsToSeeProfileBool } from '../atoms/userAtom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { wantsToUploadBool } from "../atoms/actionsAtom";
 
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase'
@@ -21,6 +23,7 @@ export function Header() {
     const [wantsToSeeProfile, setWantsToSeeProfile] = useRecoilState(wantsToSeeProfileBool);
     const [wantsToSignin, setWantsToSignin] = useRecoilState(wantsToSigninBool)
     const [wantsToSignup, setWantsToSignup] = useRecoilState(wantsToSignupBool)
+    const [wantsToUpload, setWantsToUpload] = useRecoilState(wantsToUploadBool)
 
     if(asPath.endsWith("profile") && !wantsToSeeProfile) {
         const routes = router.asPath.split("/");
@@ -47,11 +50,11 @@ export function Header() {
         </AppBar>
     );
 
-    const handleSignOut = () => {
-        signOut(auth).then(() => {
-            router.push("/");
-        })
-    }
+    // const handleSignOut = () => {
+    //     signOut(auth).then(() => {
+    //         router.push("/");
+    //     })
+    // }
 
     const WithSessionRight = () => (
         <Box>
@@ -71,6 +74,9 @@ export function Header() {
                         <AccountCircleRoundedIcon />
                     </IconButton>
                 }
+                <IconButton onClick={() => {setWantsToUpload(true)}}>
+                    <AddBoxRoundedIcon />
+                </IconButton>
                 {/* <IconButton onClick={handleSignOut}>
                     <LogoutIcon />
                 </IconButton> */}
