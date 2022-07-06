@@ -1,40 +1,44 @@
 import { useState, useRef, useEffect } from 'react'
-import { Grid, Dialog, Typography, Divider, Button, DialogActions, DialogTitle, Box, TextField, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
+import { Grid, Dialog, Typography, Divider, Button, DialogActions, DialogTitle, Box, TextField, Accordion, AccordionDetails, AccordionSummary, CircularProgress } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { userdata, userid } from "../atoms/userAtom";
 import { wantsToUploadBool } from '../atoms/actionsAtom';
 
-import { addDoc, collection, serverTimestamp, setDoc, doc } from "@firebase/firestore"
+import { addDoc, collection, serverTimestamp, updateDoc, doc, arrayUnion } from "@firebase/firestore"
 import { db, storage } from "../firebase"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useRouter } from 'next/router';
 
 const stepsToUploadPost = [
     "Upload Media",
     "Post Description",
+    "Uploading Post"
 ]
 
 export function UploadModal() {
     const currentUserID = useRecoilValue(userid);
     const currentUserData = useRecoilValue(userdata);
+    const setCurrentUserData = useSetRecoilState(userdata);
     const [wantsToUpload, setWantsToUpload] = useRecoilState(wantsToUploadBool);
 
+    const router = useRouter();
     const [file, setFile] = useState(null);
     const [caption, setCaption] = useState("");
     const [altText, setAltText] = useState("");
     const [currentStep, setCurrentStep] = useState(stepsToUploadPost[0]);
     
-    const handleOnPost = async () => {
+    const handleOnPost = () => {
         if(file===null || caption==="") {
             console.log("BRUH");
             return;
         }
 
+        setCurrentStep("Uploading Post");
         const postsCollection = collection(db, 'posts');
-        const usersCollection = collection(db, 'users');
-        const uploadsCollection = collection(usersCollection, `${currentUserID}/uploads`);
+        const userDocument = doc(db, `users/${currentUserID}`);
         const uploadTimestamp = serverTimestamp();
         var uploadData = {
             numberOfLikes: 0,
@@ -42,7 +46,7 @@ export function UploadModal() {
             time: uploadTimestamp,
             caption: caption,
             uploaderID: currentUserID,
-            // uploaderUsername: currentUserData.username,
+            uploaderUsername: currentUserData.username,
             // uploaderDP: currentUserData.dp,
         }
         
@@ -55,12 +59,17 @@ export function UploadModal() {
                 addDoc(postsCollection, uploadData)
                 .then(response => {
                     const idOfAddedDocument = response.id;
-                    addDoc(uploadsCollection, { postID: idOfAddedDocument }).then(res => {
-                        const uploadID = res.id;
-                        setDoc(doc(db, `posts/${idOfAddedDocument}`), { uploadID: uploadID }, { merge: true })
-                        .then(() => setShowModal(false))
-                        .catch(error => console.log(error));
-                    })
+                    updateDoc(userDocument, {
+                        uploads: arrayUnion(idOfAddedDocument),
+                    }).then(() => {
+                        setWantsToUpload(false);
+                        setFile(null);
+                        setAltText("");
+                        setCaption("");
+                        setDialogActionDisabled(true);
+                        setCurrentStep("Upload Media");
+                        router.push(router.asPath);
+                    }).catch(error => console.log(error));
                 })
                 .catch(error => {
                     console.log("ERROR IN ADDING DOCUMENT TO UPLOADS COLLECTION", error);
@@ -88,6 +97,10 @@ export function UploadModal() {
             else
                 setDialogActionDisabled(false)
     }, [currentStep, file, caption])
+
+    const UploadingComponent = () => (<>
+        <CircularProgress />
+    </>)
     
     return (
         <Dialog
@@ -144,28 +157,33 @@ export function UploadModal() {
                         </AccordionDetails>
                     </Accordion>
                 </>}
+                {currentStep === "Uploading Post" && <UploadingComponent />}
             </Grid>
-            <DialogActions>
+            {currentStep !== "Uploading Post" && <DialogActions>
                 <Grid container direction="row" alignItems="center" justifyContent="space-between">
                     <Button onClick={() => {
-                        setWantsToUpload(false);
                         setFile(null);
-                        
+                        setAltText("");
+                        setCaption("");
+                        setDialogActionDisabled(true);
+                        setCurrentStep("Upload Media");
+                        setWantsToUpload(false);
                     }} sx={{color: "white", fontSize: "0.75rem"}}>Cancel</Button>
                     <Button
                     variant="outlined"
                     disabled={dialogActionDisabled}
                     onClick={() => {
-                        if(file) {
+                        if(file && caption === "") {
                             setCurrentStep(stepsToUploadPost[1]);
                             return;
                         }
+                        handleOnPost();
                     }}>
                         {currentStep === "Upload Media" && "Next"}
                         {currentStep === "Post Description" && "Post"}
                     </Button>
                 </Grid>
-            </DialogActions>
+            </DialogActions>}
         </Dialog>
     );
 }
