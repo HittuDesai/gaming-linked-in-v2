@@ -27,7 +27,7 @@ export function Header() {
 
     if(asPath.endsWith("profile") && !wantsToSeeProfile) {
         const routes = router.asPath.split("/");
-        router.push(`/${routes[0]}`);
+        router.push(`/${routes[1]}`);
     }
 
     const HeaderWithoutSession = () => (
@@ -63,7 +63,7 @@ export function Header() {
                     <IconButton onClick={() => {
                         setWantsToSeeProfile(false);
                         const routes = router.asPath.split("/");
-                        router.push(`/${routes[0]}`);
+                        router.push(`/${routes[1]}`);
                     }}>
                         <HomeIcon />
                     </IconButton> :
