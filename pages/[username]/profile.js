@@ -1,27 +1,34 @@
-import { useEffect } from "react";
+import { ProfileUserData } from "../../components/ProfileUserData";
+import { Post } from "../../components/Post";
+import { Grid, Typography } from "@mui/material";
 
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { userdata, username } from "../../atoms/userAtom";
+import { userdata, username, useruploads } from "../../atoms/userAtom";
 
 import { db } from "../../firebase"
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import { Grid, Typography } from "@mui/material";
-
-import { Feed } from "../../components/Feed"
-import { redirect } from "next/dist/server/api-utils";
-import ProfileUserData from "../../components/ProfileUserData";
 
 export default function UserHomePage({ uploadsArray }) {
-    console.log(uploadsArray);
+    const setUploadsArray = useSetRecoilState(useruploads);
+    setUploadsArray(uploadsArray);
     const currentUserData = useRecoilValue(userdata);
     const currentUsername = useRecoilValue(username);
+
     return (
-        <ProfileUserData />
+        <Grid container direction="column">
+            <ProfileUserData />
+            {
+                uploadsArray.map((post, index) => {
+                    return (
+                        <Post key={index} post={post}/>
+                    );
+                })
+            }
+        </Grid>
     );
 }
 
 export async function getServerSideProps(context) {
-    // NOT USEFUL
     const { req, params } = context;
     const { headers } = req;
     const { referer } = headers;
@@ -36,7 +43,6 @@ export async function getServerSideProps(context) {
         }
     }
 
-    // --- CODE FOR ALL FETCHES BEGINS HERE
     let uploadsArray = [];
     const usersCollectionReference = collection(db, "users");
     const usernameQuery = query(usersCollectionReference, where("username", "==", username));

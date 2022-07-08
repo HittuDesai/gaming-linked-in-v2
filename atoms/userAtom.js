@@ -19,3 +19,8 @@ export const wantsToSeeProfileBool = atom({
     key: 'wantsToSeeProfileBool',
     default: false,
 });
+
+export const useruploads = atom({
+    key: 'useruploads',
+    default: [],
+});

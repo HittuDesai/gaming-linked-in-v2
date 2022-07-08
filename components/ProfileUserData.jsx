@@ -2,7 +2,7 @@ import { Avatar, Badge, Box, Button, Divider, Grid, Stack, Typography } from "@m
 import { useRecoilValue } from "recoil";
 import { userdata } from "../atoms/userAtom";
 
-function ProfileUserData() {
+export function ProfileUserData() {
     const currentUserData = useRecoilValue(userdata);
     const numPosts = currentUserData.numPosts;
     const numFollowers = currentUserData.numFollowers;
@@ -33,5 +33,3 @@ function ProfileUserData() {
         </Stack>
     );
 }
-
-export default ProfileUserData;
