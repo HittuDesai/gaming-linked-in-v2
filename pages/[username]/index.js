@@ -47,18 +47,17 @@ export async function getServerSideProps(context) {
     const usersCollectionReference = collection(db, "users");
     const usernameQuery = query(usersCollectionReference, where("username", "==", username));
     const querySnapshot = await getDocs(usernameQuery);
-    const currentUserData = querySnapshot.docs[0].data();
-
-    if(currentUserData)
+    if(querySnapshot.empty)
         return {
             props: {
-                userFound: true,
-                currentUserData,
-            },
-        };
+                userFound: false,
+            }
+        }
+    const currentUserData = querySnapshot.docs[0].data();
     return {
         props: {
-            userFound: false,
-        }
-    }
+            userFound: true,
+            currentUserData,
+        },
+    };
 }

@@ -4,14 +4,15 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userdata, username } from "../../atoms/userAtom";
 
 import { db } from "../../firebase"
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { Grid, Typography } from "@mui/material";
 
 import { Feed } from "../../components/Feed"
 import { redirect } from "next/dist/server/api-utils";
 import ProfileUserData from "../../components/ProfileUserData";
 
-export default function UserHomePage({ referer }) {
+export default function UserHomePage({ uploadsArray }) {
+    console.log(uploadsArray);
     const currentUserData = useRecoilValue(userdata);
     const currentUsername = useRecoilValue(username);
     return (
@@ -20,6 +21,7 @@ export default function UserHomePage({ referer }) {
 }
 
 export async function getServerSideProps(context) {
+    // NOT USEFUL
     const { req, params } = context;
     const { headers } = req;
     const { referer } = headers;
@@ -34,14 +36,23 @@ export async function getServerSideProps(context) {
         }
     }
 
+    // --- CODE FOR ALL FETCHES BEGINS HERE
+    let uploadsArray = [];
     const usersCollectionReference = collection(db, "users");
     const usernameQuery = query(usersCollectionReference, where("username", "==", username));
     const querySnapshot = await getDocs(usernameQuery);
     const currentUserData = querySnapshot.docs[0].data();
-
-    return {
-        props: {}
+    const postIDs = currentUserData.uploads;
+    
+    for(const postID of postIDs) {
+        const postReference = doc(db, `posts/${postID}`);
+        const snapshot = await getDoc(postReference);
+        const postData = snapshot.data();
+        postData.time = postData.time.toJSON();
+        uploadsArray.push(postData);
     }
+
+    return { props: { uploadsArray }};
 }
 
 /*

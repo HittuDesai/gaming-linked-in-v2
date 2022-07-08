@@ -12,7 +12,8 @@ function ProfileUserData() {
         <Stack sx={{ margin: "1rem" }}>
             <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
                 <Box sx={{ height: "5rem", aspectRatio: "1" }}>
-                    <Avatar src={currentUserData} sx={{ width: "100%", height: "100%" }} />
+                    <Avatar sx={{ width: "100%", height: "100%" }} />
+                    {/* src={currentUserData} */}
                 </Box>
                 <Stack align="center">
                     <Typography fontSize="large">{numPosts}</Typography>
