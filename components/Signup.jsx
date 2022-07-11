@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useRouter } from 'next/router';
+import { Button, Box, Grid, TextField, Typography } from '@mui/material';
 
 import { useSetRecoilState } from 'recoil';
+import { wantsToSignupBool } from "../atoms/loginAtom";
 
 import { db } from "../firebase"
 import { collection, getDocs, doc, setDoc } from "firebase/firestore"
-import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, signInWithPopup, updateCurrentUser } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
-function SignUp() {
+export function SignUp() {
+    const router = useRouter();
     const [signupEmail, setSignupEmail] = useState("");
     const [signupEmailError, setSignupEmailError] = useState("");
     const [signupPassword, setSignupPassword] = useState("");
     const [signupPasswordError, setSignupPasswordError] = useState("");
     const [signupUsername, setSignupUsername] = useState("");
     const [signupUsernameError, setSignupUsernameError] = useState("");
-    const setWantsToSignUp = useSetRecoilState(signup);
+    const setWantsToSignUp = useSetRecoilState(wantsToSignupBool);
 
     const auth = getAuth();
-    const googleProvider = new GoogleAuthProvider();
     const collectionReference = collection(db, "users");
 
     let allUsernames = [];
@@ -37,15 +40,18 @@ function SignUp() {
 
         createUserWithEmailAndPassword(auth, signupEmail, signupPassword)
         .then((userCredential) => {
-            const documentReference = doc(db, `users/${userCredential.user.uid}`)
+            const newUserID = userCredential.user.uid;
+            const documentReference = doc(db, `users/${newUserID}`)
             setDoc(documentReference, {
-                uid: userCredential.user.uid,
+                uid: newUserID,
                 email: signupEmail,
                 password: signupPassword,
                 username: signupUsername,
                 numPosts: 0,
                 numFollowers: 0,
                 numFollowing: 0,
+                uploads: [],
+                savedPosts: [],
             }).then(() => {
                 setSignupEmail("");
                 setSignupPassword("");
@@ -53,7 +59,8 @@ function SignUp() {
                 setSignupEmailError("");
                 setSignupPasswordError("");
                 setSignupUsernameError("");
-                window.location = "/";
+                setWantsToSignUp(false);
+                router.replace(`/fetch/${newUserID}`);
             })
         })
         .catch((error) => {
@@ -73,11 +80,14 @@ function SignUp() {
     }
 
     return (
-        <React.Fragment>
-            {/* <Group style={{width: "100%", height:"100%"}} p={20} position="center">
-                <form style={{width: "90%", height:"100%"}}>
-                    <TextInput
+        <form>
+            <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100%", height: "100vh"}}>
+                <Box sx={{width: "100%", padding: "0rem 1rem 1rem 1rem"}}>
+                    <TextField
                     required
+                    fullWidth
+                    type="email"
+                    variant='filled'
                     label="Username"
                     placeholder="Your Username"
                     value={signupUsername}
@@ -86,46 +96,50 @@ function SignUp() {
                     autoComplete="none"
                     />
                     {signupUsernameError !== "" &&
-                    <Text size='xs' style={{fontStyle: "italic"}} weight="bolder" color="red">
+                    <Typography size='xs' style={{fontStyle: "italic"}} weight="bolder" color="red">
                         {signupUsernameError}
-                    </Text>}
+                    </Typography>}
+                </Box>
 
-                    <TextInput
+                <Box sx={{width: "100%", padding: "0rem 1rem 1rem 1rem"}}>
+                    <TextField
                     required
+                    fullWidth
+                    type="email"
+                    variant='filled'
                     label="Email"
                     placeholder="Your Email"
-                    value={signupEmail}
                     onChange={event => setSignupEmail(event.target.value)}
-                    style={{width: "100%"}}
                     autoComplete="none"
+                    value={signupEmail}
                     />
                     {signupEmailError !== "" &&
-                    <Text size='xs' style={{fontStyle: "italic"}} weight="bolder" color="red">
+                    <Typography size='xs' style={{fontStyle: "italic"}} weight="bolder" color="red">
                         {signupEmailError}
-                    </Text>}
+                    </Typography>}
+                </Box>
 
-                    <PasswordInput
+                <Box sx={{width: "100%", padding: "0rem 1rem 1rem 1rem"}}>
+                    <TextField
                     required
+                    fullWidth
+                    variant="filled"
                     label="Password"
                     placeholder="Your Password"
-                    value={signupPassword}
                     onChange={event => setSignupPassword(event.target.value)}
-                    style={{width: "100%"}}
                     autoComplete="none"
+                    value={signupPassword}
                     />
                     {signupPasswordError !== "" &&
-                    <Text size='xs' style={{fontStyle: "italic"}} weight="bolder" color="red">
+                    <Typography size='xs' style={{fontStyle: "italic"}} weight="bolder" color="red">
                         {signupPasswordError}
-                    </Text>}
+                    </Typography>}
+                </Box>
 
-                    <Group direction="row" position="center" style={{width: "100%"}} py={20}>
-                        <Button onClick={handleSignUpWithEmail} style={{width: "47.4%"}}>Sign Up</Button>
-                        <Button onClick={() => setWantsToSignUp(false)} style={{width: "47.4%"}}><GiCancel /></Button>
-                    </Group>
-                </form>
-            </Group> */}
-        </React.Fragment>
+                <Box direction="row" position="center" style={{width: "100%", padding: "0rem 1rem 0rem 1rem"}}>
+                    <Button variant="contained" onClick={event => handleSignUpWithEmail(event)} style={{width: "100%"}}>Sign Up</Button>
+                </Box>
+            </Grid>
+        </form>
     );
 }
-
-export default SignUp;

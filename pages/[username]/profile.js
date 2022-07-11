@@ -1,18 +1,24 @@
 import { ProfileUserData } from "../../components/ProfileUserData";
 import { Post } from "../../components/Post";
-import { Grid, Typography } from "@mui/material";
+import { CircularProgress, Grid, Typography } from "@mui/material";
 
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { userdata, username, useruploads } from "../../atoms/userAtom";
+import { useRecoilValue } from "recoil";
+import { userdata, username } from "../../atoms/userAtom";
 
 import { db } from "../../firebase"
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, orderBy, query, where } from "firebase/firestore";
 
 export default function UserHomePage({ uploadsArray }) {
-    const setUploadsArray = useSetRecoilState(useruploads);
-    setUploadsArray(uploadsArray);
     const currentUserData = useRecoilValue(userdata);
     const currentUsername = useRecoilValue(username);
+
+    if(!uploadsArray)
+    return (
+        <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
+            <CircularProgress />
+            <Typography fontSize="small" variant="overline" sx={{marginTop: "1rem"}}>Signing You In</Typography>
+        </Grid>
+    );
 
     return (
         <Grid container direction="column">
@@ -54,12 +60,15 @@ export async function getServerSideProps(context) {
         const postReference = doc(db, `posts/${postID}`);
         const snapshot = await getDoc(postReference);
         const postData = snapshot.data();
+        uploadsArray.sort((a, b) => a.time - b.time);
         postData.time = postData.time.toJSON();
         postData.postID = postID;
 
         let comments = [];
         const postCommentsCollection = collection(db, `/posts/${postID}/comments`);
-        const allCommentsSnapshot = await getDocs(postCommentsCollection);
+        const commentsQueryConstraint = orderBy("commentTime");
+        const commentsQuery = query(postCommentsCollection, commentsQueryConstraint);
+        const allCommentsSnapshot = await getDocs(commentsQuery);
         const arrayOfComments = allCommentsSnapshot.docs;
         for(const commentDocument of arrayOfComments) {
             const commentDocumentID = commentDocument.id;

@@ -7,8 +7,10 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useRecoilValue } from "recoil";
 import { username } from "../atoms/userAtom";
 import { LoadingButton } from "@mui/lab";
+import { useRouter } from "next/router";
 
 export function CommentForm({ postID }) {
+    const router = useRouter();
     const [commentText, setCommentText] = useState("");
     const [isPostingComment, setIsPostingComment] = useState(false);
     const currentUsername = useRecoilValue(username);
@@ -26,11 +28,12 @@ export function CommentForm({ postID }) {
         }).then(() => {
             setIsPostingComment(false);
             setCommentText("");
+            router.push(`/${currentUsername}/profile`);
         }).catch(error => console.log(error));
     }
 
     const PostButton = () => (
-        <InputAdornment>
+        <InputAdornment position="end">
             <LoadingButton loading={isPostingComment} sx={{ margin: 0, padding: 0, borderRadius: "1rem", minWidth: 0 }} onClick={handlePostComment}>
                 Post
             </LoadingButton>

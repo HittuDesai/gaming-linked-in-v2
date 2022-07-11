@@ -4,8 +4,8 @@ import { Button, Box, Grid, TextField, Typography } from '@mui/material';
 import { useSetRecoilState } from 'recoil';
 import { userid } from '../atoms/userAtom';
 
-import { auth, db } from '../firebase';
-import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, signOut } from "firebase/auth";
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence, signOut } from "firebase/auth";
 import { useRouter } from 'next/router';
 
 export function SignIn() {
