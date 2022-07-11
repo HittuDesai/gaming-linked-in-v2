@@ -55,6 +55,7 @@ export async function getServerSideProps(context) {
         const snapshot = await getDoc(postReference);
         const postData = snapshot.data();
         postData.time = postData.time.toJSON();
+        postData.postID = postID;
         uploadsArray.push(postData);
     }
 

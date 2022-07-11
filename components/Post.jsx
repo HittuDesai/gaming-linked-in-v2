@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Card, CardMedia, CardActions, Avatar, Typography, IconButton, Paper, Popover } from '@mui/material';
+import { Box, Grid, Card, CardMedia, CardActions, Avatar, Typography, IconButton, Paper, Popover, Menu, MenuItem } from '@mui/material';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -7,13 +7,15 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CommentRoundedIcon from '@mui/icons-material/CommentRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import { doc, deleteDoc, getDoc, Timestamp } from 'firebase/firestore';
+import { doc, deleteDoc, getDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { db, storage } from '../firebase';
 import { ref, deleteObject } from 'firebase/storage'
 
 import { useRecoilValue } from 'recoil'
 import { userdata, username, useruploads, userid } from "../atoms/userAtom";
+import Router, { useRouter } from 'next/router';
 
 export function Post ({ post }) {
     const [currentPost, setCurrentPost] = useState(post);
@@ -29,6 +31,7 @@ export function Post ({ post }) {
     const postTimeToDisplay = postTimeInDateFormat.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric", });
 
     const [popoverOpen, setPopoverOpen] = useState(false);
+    const [popoverAnchor, setPopoverAnchor] = useState(null);
 
     // const updatePostStatsInterval = setInterval(() => {
     //     /* If Else Not Working
@@ -47,30 +50,25 @@ export function Post ({ post }) {
     //     });
     // }, 10000);
 
-    const handleDelete = event => {
-        const element = event.currentTarget;
-        const documentID = element.id;
-        const documentReference = doc(db, `users/${currentUserID}/uploads/${documentID}`);
+    const router = useRouter();
+    const handleDelete = () => {
+        setPopoverOpen(false);
+        const postDocumentID = post.postID;
+        const postReference = doc(db, `posts/${postDocumentID}`);
         const postImageURL = currentPost.url;
         const postImageReference = ref(storage, postImageURL);
 
+        const userDocumentReference = doc(db, `users/${currentUserID}`);
+        const userUploadsArray = currentUserData.uploads;
+        const newUserUploadsArray = userUploadsArray.filter(uploadID => uploadID !== postDocumentID);
+
         deleteObject(postImageReference).then(() => {
-            getDoc(documentReference).then(snapshot => {
-                const allPostsDocID = snapshot.data().postID;
-                const allPostsDocRef = doc(db, `posts/${allPostsDocID}`);
-                deleteDoc(allPostsDocRef).then(() => {
-                    deleteDoc(documentReference).then(() => {
-                        setCurrentUserUploads(currentUserUploads.filter(upload => upload.uploadID !== documentID));
-                    }).catch(error => console.log(error));
+            deleteDoc(postReference).then(() => {
+                updateDoc(userDocumentReference, "uploads", newUserUploadsArray).then(() => {
+                    router.push(`/${currentUsername}/profile`);
                 }).catch(error => console.log(error));
-            })
-            .catch(error => {
-                console.log("ERROR IN DELETING DOCUMENT", error);
-            })
-        })
-        .catch(error => {
-            console.log("ERROR IN DELETING IMAGE FROM STORAGE", error);
-        })
+            }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
     }
 
     const handleLikePost = () => {
@@ -101,20 +99,30 @@ export function Post ({ post }) {
                             <Typography fontSize={"small"}>{currentUserData.numFollowers} followers</Typography>
                         </Grid>
                     </Box>
-                    <IconButton onClick={popoverOpen => setPopoverOpen(!popoverOpen)}>
+                    <IconButton onClick={event => {
+                        if(popoverOpen)
+                            setPopoverAnchor(null);
+                        else
+                            setPopoverAnchor(event.currentTarget);
+                        setPopoverOpen(!popoverOpen);
+                    }}>
                         <MoreVertIcon />
+                        <Menu
+                        open={popoverOpen}
+                        anchorEl={popoverAnchor}
+                        anchorOrigin={{
+                            vertical: "bottom", horizontal: "right",
+                        }}
+                        transformOrigin={{
+                            vertical: "top", horizontal: "right",
+                        }}
+                        >
+                            <MenuItem sx={{ minHeight: "0" }} onClick={handleDelete}>
+                                <DeleteForeverIcon sx={{marginRight: "1rem"}} /> 
+                                Delete
+                            </MenuItem>
+                        </Menu>
                     </IconButton>
-                    <Popover open={popoverOpen}
-                    anchorOrigin={{
-                        vertical: "bottom", horizontal: "right",
-                    }}
-                    transformOrigin={{
-                        vertical: "top", horizontal: "right",
-                    }}
-                    sx={{width: "200px", height: "200px", backgroundColor: "red"}}
-                    >
-                        BRUH
-                    </Popover>
                 </Grid>
                 <CardMedia
                 component="img"
