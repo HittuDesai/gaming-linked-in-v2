@@ -22,6 +22,7 @@ export function CommentForm({ postID }) {
             commentedBy: currentUsername,
             commentText,
             commentTime,
+            likedBy: [],
         }).then(() => {
             setIsPostingComment(false);
             setCommentText("");
