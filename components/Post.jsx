@@ -33,22 +33,23 @@ export function Post ({ post }) {
     const [popoverOpen, setPopoverOpen] = useState(false);
     const [popoverAnchor, setPopoverAnchor] = useState(null);
 
-    // const updatePostStatsInterval = setInterval(() => {
-    //     /* If Else Not Working
-    //     if(likedBy === post.likedBy) {
-    //         console.log("EMPTY");
-    //         return;
-    //     } else {
-    //         console.log(likedBy);
-    //         const postDocRef = doc(db, `posts/${post.postDocID}`);
-    //         getDoc(postDocRef).then(snapshot => console.table(snapshot.data()));
-    //     } */
+    const updatePostStatsInterval = setInterval(() => {
+        // /* If Else Not Working
+        // if(likedBy === post.likedBy) {
+        //     console.log("EMPTY");
+        //     return;
+        // } else {
+        //     console.log(likedBy);
+        //     const postDocRef = doc(db, `posts/${post.postDocID}`);
+        //     getDoc(postDocRef).then(snapshot => console.table(snapshot.data()));
+        // } */
 
-    //     const postDocRef = doc(db, `posts/${post.postDocID}`);
-    //     setDoc(postDocRef, { numberOfLikes: numberOfLikes, likedBy: likedBy }, { merge: true }).then(() => {
-    //         getDoc(postDocRef).then(snapshot => console.table(snapshot.data()));
-    //     });
-    // }, 10000);
+        // const postDocRef = doc(db, `posts/${post.postDocID}`);
+        // setDoc(postDocRef, { numberOfLikes: numberOfLikes, likedBy: likedBy }, { merge: true }).then(() => {
+        //     getDoc(postDocRef).then(snapshot => console.table(snapshot.data()));
+        // });
+        // console.log("BRUH");
+    }, 30000);
 
     const router = useRouter();
     const handleDelete = () => {
@@ -74,17 +75,24 @@ export function Post ({ post }) {
     const handleLikePost = () => {
         const numberOfLikes = currentPost.numberOfLikes;
         const likedBy = currentPost.likedBy;
+        const postDocumentID = post.postID;
+        const postDocumentReference = doc(db, `posts/${postDocumentID}`);
+
         if(isPostLiked) {
             setIsPostLiked(false);
             const newNumberOfLikes = numberOfLikes-1;
             const newLikedBy = likedBy.filter( userID => userID !== currentUserID);
             setCurrentPost({ ...currentPost, numberOfLikes: newNumberOfLikes, likedBy: newLikedBy });
+            updateDoc(postDocumentReference, "likedBy", newLikedBy);
+            updateDoc(postDocumentReference, "numberOfLikes", newNumberOfLikes);
         }
         else {
             setIsPostLiked(true);
             const newNumberOfLikes = numberOfLikes+1;
             const newLikedBy = [...likedBy, currentUserID];
             setCurrentPost({ ...currentPost, numberOfLikes: newNumberOfLikes, likedBy: newLikedBy });
+            updateDoc(postDocumentReference, "likedBy", newLikedBy);
+            updateDoc(postDocumentReference, "numberOfLikes", newNumberOfLikes);
         }
     }
 
