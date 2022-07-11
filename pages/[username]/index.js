@@ -8,6 +8,7 @@ import { userdata, userid, username } from "../../atoms/userAtom";
 import { db } from "../../firebase"
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { Grid, Typography } from "@mui/material";
+import { useRouter } from "next/router";
 
 export default function UserHomePage({ userFound, currentUserData }) {
     if(!userFound)
@@ -22,12 +23,14 @@ export default function UserHomePage({ userFound, currentUserData }) {
     const setCurrentUserID = useSetRecoilState(userid);
     const setCurrentUsername = useSetRecoilState(username);
 
+    const router = useRouter();
     useEffect(() => {
         if(currentUserData) {
             setCurrentUserData(currentUserData);
             setCurrentUserID(currentUserData.uid);
             const currentUsername = currentUserData.username;
             setCurrentUsername(currentUsername);
+            router.push(`/${currentUsername}/feed`);
         }
     }, [currentUserData])
 

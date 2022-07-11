@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { userdata, userid } from "../atoms/userAtom";
 import { wantsToUploadBool } from '../atoms/actionsAtom';
 
-import { addDoc, collection, serverTimestamp, updateDoc, doc, arrayUnion } from "@firebase/firestore"
+import { addDoc, collection, serverTimestamp, updateDoc, doc, arrayUnion, increment } from "@firebase/firestore"
 import { db, storage } from "../firebase"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useRouter } from 'next/router';
@@ -61,6 +61,7 @@ export function UploadModal() {
                     const idOfAddedDocument = response.id;
                     updateDoc(userDocument, {
                         uploads: arrayUnion(idOfAddedDocument),
+                        numPosts: increment(1),
                     }).then(() => {
                         setWantsToUpload(false);
                         setFile(null);

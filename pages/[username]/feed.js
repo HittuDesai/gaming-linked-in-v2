@@ -1,33 +1,28 @@
-import { ProfileUserData } from "../../components/ProfileUserData";
 import { Post } from "../../components/Post";
 import { UploadModal } from "../../components/UploadModal";
 import { CircularProgress, Grid, Typography } from "@mui/material";
 
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { userdata, username } from "../../atoms/userAtom";
 
 import { db } from "../../firebase"
-import { collection, doc, getDoc, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, getDoc, getDocs, orderBy, query, where } from "firebase/firestore";
 
-export default function UserProfilePage({ uploadsArray, currentUserData }) {
-    const setCurrentUserData = useSetRecoilState(userdata);
-    setCurrentUserData(currentUserData);
-    const currentUsername = useRecoilValue(username);
+export default function UserFeedPage({ feedArray }) {
 
-    if(!uploadsArray)
-    return (
-        <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
-            <CircularProgress />
-            <Typography fontSize="small" variant="overline" sx={{marginTop: "1rem"}}>Signing You In</Typography>
-        </Grid>
-    );
+    if(!feedArray)
+        return (
+            <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
+                <CircularProgress />
+                <Typography fontSize="small" variant="overline" sx={{marginTop: "1rem"}}>Signing You In</Typography>
+            </Grid>
+        );
 
     return (
-        <>{uploadsArray ? <>
+        <>
             <Grid container direction="column">
-                <ProfileUserData />
                 {
-                    uploadsArray.map((post, index) => {
+                    feedArray.map((post, index) => {
                         return (
                             <Post key={index} post={post}/>
                         );
@@ -35,12 +30,7 @@ export default function UserProfilePage({ uploadsArray, currentUserData }) {
                 }
             </Grid>
             <UploadModal />
-        </> : 
-        <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
-            <CircularProgress />
-            <Typography fontSize="small" variant="overline" sx={{marginTop: "1rem"}}>Signing You In</Typography>
-        </Grid>
-        }</>
+        </>
     );
 }
 
@@ -59,18 +49,21 @@ export async function getServerSideProps(context) {
         }
     }
 
-    let uploadsArray = [];
+    let feedArray = [];
     const usersCollectionReference = collection(db, "users");
     const usernameQuery = query(usersCollectionReference, where("username", "==", username));
     const querySnapshot = await getDocs(usernameQuery);
     const currentUserData = querySnapshot.docs[0].data();
-    const postIDs = currentUserData.uploads;
+    const currentUserID = currentUserData.uid;
+
+    const allPostsCollectionReference = collection(db, "/posts");
+    const feedQuery = query(allPostsCollectionReference, where("uploaderID", "!=", currentUserID));
+    const allPostsSnapshot = await getDocs(feedQuery);
+    const allPostDocuments = allPostsSnapshot.docs;
     
-    for(const postID of postIDs) {
-        const postReference = doc(db, `posts/${postID}`);
-        const snapshot = await getDoc(postReference);
-        const postData = snapshot.data();
-        uploadsArray.sort((a, b) => b.time - a.time);
+    for(const postDocument of allPostDocuments) {
+        const postID = postDocument.id;
+        const postData = postDocument.data();
         postData.time = postData.time.toJSON();
         postData.postID = postID;
 
@@ -91,8 +84,8 @@ export async function getServerSideProps(context) {
         }
         postData.comments = comments;
 
-        uploadsArray.push(postData);
+        feedArray.push(postData);
     }
 
-    return { props: { uploadsArray, currentUserData }};
+    return { props: { feedArray }};
 }

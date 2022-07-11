@@ -10,7 +10,7 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { doc, deleteDoc, updateDoc, decrement } from 'firebase/firestore';
 import { db, storage } from '../firebase';
 import { ref, deleteObject } from 'firebase/storage'
 
@@ -50,7 +50,9 @@ export function Post ({ post }) {
         deleteObject(postImageReference).then(() => {
             deleteDoc(postReference).then(() => {
                 updateDoc(userDocumentReference, "uploads", newUserUploadsArray).then(() => {
-                    router.push(`/${currentUsername}/profile`);
+                    updateDoc(userDocumentReference, "numPosts", decrement(1)).then(() => {
+                        router.push(`/${currentUsername}/profile`);
+                    }).catch(error => console.log(error));
                 }).catch(error => console.log(error));
             }).catch(error => console.log(error));
         }).catch(error => console.log(error));
@@ -86,7 +88,7 @@ export function Post ({ post }) {
                     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <Avatar sx={{ marginRight: "1rem" }} />
                         <Grid container direction="column">
-                            <Typography fontSize="large" variant="overline" sx={{ lineHeight: "1.5rem", textTransform: "none" }}>{currentUsername}</Typography>
+                            <Typography fontSize="large" variant="overline" sx={{ lineHeight: "1.5rem", textTransform: "none" }}>{post.uploaderUsername}</Typography>
                             <Typography fontSize={"small"}>{currentUserData.numFollowers} followers</Typography>
                         </Grid>
                     </Box>

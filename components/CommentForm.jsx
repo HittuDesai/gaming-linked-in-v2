@@ -28,7 +28,7 @@ export function CommentForm({ postID }) {
         }).then(() => {
             setIsPostingComment(false);
             setCommentText("");
-            router.push(`/${currentUsername}/profile`);
+            router.push(router.asPath);
         }).catch(error => console.log(error));
     }
 
@@ -53,7 +53,7 @@ export function CommentForm({ postID }) {
             border: `2px solid ${grey[700]}`,
             borderRadius: "3rem",
             padding: "0.5rem 1rem",
-            marginTop: "1rem",
+            marginTop: "0.25rem",
             minWidth: 0
         }}
         placeholder="Write a comment"

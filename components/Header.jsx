@@ -7,7 +7,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { wantsToSigninBool, wantsToSignupBool } from '../atoms/loginAtom';
-import { userid, wantsToSeeProfileBool } from '../atoms/userAtom';
+import { userid, username, wantsToSeeProfileBool } from '../atoms/userAtom';
 import { wantsToUploadBool } from "../atoms/actionsAtom";
 
 import { signOut } from 'firebase/auth';
@@ -17,7 +17,7 @@ import { Box } from '@mui/system';
 
 export function Header() {
     const router = useRouter();
-    const asPath = router.asPath;
+    const currentUsername = useRecoilValue(username);
 
     const currentUserID = useRecoilValue(userid);
     const [wantsToSeeProfile, setWantsToSeeProfile] = useRecoilState(wantsToSeeProfileBool);
@@ -25,6 +25,7 @@ export function Header() {
     const [wantsToSignup, setWantsToSignup] = useRecoilState(wantsToSignupBool)
     const [wantsToUpload, setWantsToUpload] = useRecoilState(wantsToUploadBool)
 
+    const asPath = router.asPath;
     if(asPath.endsWith("profile") && !wantsToSeeProfile) {
         const routes = router.asPath.split("/");
         router.push(`/${routes[1]}`);
@@ -69,7 +70,7 @@ export function Header() {
                     </IconButton> :
                     <IconButton onClick={() => {
                         setWantsToSeeProfile(true);
-                        router.push(`${router.asPath}/profile`)
+                        router.replace(`${currentUsername}/profile`)
                     }}>
                         <AccountCircleRoundedIcon />
                     </IconButton>
