@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Box, Grid, Card, CardMedia, CardActions, Avatar, Typography, IconButton, Paper, Popover, Menu, MenuItem } from '@mui/material';
+import { Box, Grid, Card, CardMedia, CardActions, Avatar, Typography, IconButton, Paper, Menu, MenuItem, Collapse } from '@mui/material';
+import { CommentSection } from './CommentSection';
+
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -9,15 +11,16 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import { doc, deleteDoc, getDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db, storage } from '../firebase';
 import { ref, deleteObject } from 'firebase/storage'
 
 import { useRecoilValue } from 'recoil'
-import { userdata, username, useruploads, userid } from "../atoms/userAtom";
-import Router, { useRouter } from 'next/router';
+import { userdata, username, userid } from "../atoms/userAtom";
+import { useRouter } from 'next/router';
 
 export function Post ({ post }) {
+    const postDocumentID = post.postID;
     const [currentPost, setCurrentPost] = useState(post);
     const currentUserID = useRecoilValue(userid);
     const currentUsername = useRecoilValue(username)
@@ -32,29 +35,11 @@ export function Post ({ post }) {
 
     const [popoverOpen, setPopoverOpen] = useState(false);
     const [popoverAnchor, setPopoverAnchor] = useState(null);
-
-    const updatePostStatsInterval = setInterval(() => {
-        // /* If Else Not Working
-        // if(likedBy === post.likedBy) {
-        //     console.log("EMPTY");
-        //     return;
-        // } else {
-        //     console.log(likedBy);
-        //     const postDocRef = doc(db, `posts/${post.postDocID}`);
-        //     getDoc(postDocRef).then(snapshot => console.table(snapshot.data()));
-        // } */
-
-        // const postDocRef = doc(db, `posts/${post.postDocID}`);
-        // setDoc(postDocRef, { numberOfLikes: numberOfLikes, likedBy: likedBy }, { merge: true }).then(() => {
-        //     getDoc(postDocRef).then(snapshot => console.table(snapshot.data()));
-        // });
-        // console.log("BRUH");
-    }, 30000);
+    const [showCommentsSection, setShowCommentsSection] = useState(false);
 
     const router = useRouter();
     const handleDelete = () => {
         setPopoverOpen(false);
-        const postDocumentID = post.postID;
         const postReference = doc(db, `posts/${postDocumentID}`);
         const postImageURL = currentPost.url;
         const postImageReference = ref(storage, postImageURL);
@@ -75,7 +60,6 @@ export function Post ({ post }) {
     const handleLikePost = () => {
         const numberOfLikes = currentPost.numberOfLikes;
         const likedBy = currentPost.likedBy;
-        const postDocumentID = post.postID;
         const postDocumentReference = doc(db, `posts/${postDocumentID}`);
 
         if(isPostLiked) {
@@ -153,7 +137,7 @@ export function Post ({ post }) {
                             <IconButton onClick={handleLikePost} sx={{ padding: "0", paddingRight: "0.5rem" }}>
                                 {isPostLiked ? <FavoriteIcon sx={{ color: "red" }} /> : <FavoriteBorderIcon />}
                             </IconButton>
-                            <IconButton sx={{ padding: "0", paddingRight: "0.5rem" }}>
+                            <IconButton sx={{ padding: "0", paddingRight: "0.5rem" }} onClick={() => setShowCommentsSection(prevValue => !prevValue)}>
                                 <CommentRoundedIcon />
                             </IconButton >
                             <IconButton sx={{ padding: "0" }}>
@@ -165,6 +149,9 @@ export function Post ({ post }) {
                         </IconButton>
                     </Grid>
                 </CardActions>
+                <Collapse in={showCommentsSection}>
+                    <CommentSection postID={postDocumentID} />
+                </Collapse>
             </Paper>
         </Card>
     );
