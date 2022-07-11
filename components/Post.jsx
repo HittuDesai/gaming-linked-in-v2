@@ -149,7 +149,7 @@ export function Post ({ post }) {
                     </Grid>
                 </CardActions>
                 <Collapse in={showCommentsSection}>
-                    <CommentSection postID={postDocumentID} />
+                    <CommentSection postID={postDocumentID} comments={post.comments} />
                 </Collapse>
             </Paper>
         </Card>

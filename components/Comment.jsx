@@ -13,6 +13,10 @@ export function Comment({ comment, postID }) {
     const [currentComment, setCurrentComment] = useState(comment);
     const currentUserID = useRecoilValue(userid);
 
+    const commentTime = comment.commentTime;
+    const commentTimeInDateFormat = new Date(commentTime.seconds * 1000 + commentTime.nanoseconds / 1000000);
+    const commentTimeToDisplay = commentTimeInDateFormat.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric", });
+
     const likedBy = currentComment.likedBy;
     const [isCommentLiked, setIsCommentLiked] = useState(likedBy?.includes(currentUserID));
 
@@ -42,9 +46,10 @@ export function Comment({ comment, postID }) {
                     <Typography variant="caption" fontWeight="bolder" sx={{ paddingRight: "0.25rem" }}>{comment.commentedBy}</Typography>
                     <Typography variant="caption">{comment.commentText}</Typography>
                 </span>
-                <Grid container direction="row" alignItems="center" justifyContent="space-around">
-                    <Typography variant="caption" fontStyle="italic" color={grey[600]}>{likedBy.length} likes</Typography>
-                    <Typography variant="caption" fontStyle="italic" color={grey[600]}>Reply</Typography>
+                <Grid container direction="row" alignItems="center" justifyContent="space-between">
+                    <Typography variant="caption" fontStyle="italic" color={grey[600]}>{commentTimeToDisplay}</Typography>
+                    <Typography variant="caption" fontStyle="italic" fontWeight="bolder" color={grey[600]}>{likedBy.length} likes</Typography>
+                    <Typography variant="caption" fontStyle="italic" color={grey[600]} sx={{ paddingRight: "2rem" }}>Reply</Typography>
                 </Grid>
             </Box>
             <IconButton onClick={handleLikeComment} sx={{ padding: "0", marginLeft: "0.5rem", width: "1rem", height: "1rem" }}>
