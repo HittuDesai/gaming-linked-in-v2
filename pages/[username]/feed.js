@@ -1,20 +1,32 @@
 import { Post } from "../../components/Post";
 import { UploadModal } from "../../components/UploadModal";
 import { CircularProgress, Grid, Typography } from "@mui/material";
+import ErrorIcon from "@mui/icons-material/Error";
 
 import { useRecoilValue } from "recoil";
-import { userdata, username } from "../../atoms/userAtom";
+import { userdata, userid } from "../../atoms/userAtom";
 
 import { db } from "../../firebase"
 import { collection, getDoc, getDocs, orderBy, query, where } from "firebase/firestore";
 
-export default function UserFeedPage({ feedArray }) {
-
+export default function UserFeedPage({ feedArray, requestedUserData }) {
     if(!feedArray)
         return (
             <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
                 <CircularProgress />
                 <Typography fontSize="small" variant="overline" sx={{marginTop: "1rem"}}>Signing You In</Typography>
+            </Grid>
+        );
+
+    const loggedInUserData = useRecoilValue(userdata);
+    const loggedInUserID = loggedInUserData.uid;
+    const requestedUserID = requestedUserData.uid;
+
+    if(requestedUserID !== loggedInUserID)
+        return (
+            <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
+                <ErrorIcon fontSize="large" sx={{ color: "red" }}/>
+                <Typography fontSize="small" variant="overline" color="red" sx={{marginTop: "1rem"}}>You do not have enough permissions</Typography>
             </Grid>
         );
 
@@ -40,14 +52,14 @@ export async function getServerSideProps(context) {
     const { referer } = headers;
     const { username } = params;
 
-    if(!referer) {
-        return {
-            redirect: {
-                destination: `/${username}`,
-                permanent: false,
-            }
-        }
-    }
+    // if(!referer) {
+    //     return {
+    //         redirect: {
+    //             destination: `/${username}`,
+    //             permanent: false,
+    //         }
+    //     }
+    // }
 
     let feedArray = [];
     const usersCollectionReference = collection(db, "users");
@@ -87,5 +99,5 @@ export async function getServerSideProps(context) {
         feedArray.push(postData);
     }
 
-    return { props: { feedArray }};
+    return { props: { feedArray, requestedUserData: currentUserData }};
 }

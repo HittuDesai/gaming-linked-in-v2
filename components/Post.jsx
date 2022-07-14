@@ -24,6 +24,7 @@ export function Post ({ post }) {
     const currentUserID = useRecoilValue(userid);
     const currentUsername = useRecoilValue(username)
     const currentUserData = useRecoilValue(userdata);
+    const numFollowers = currentUserData?.followers?.length || 0;
 
     const likedBy = currentPost.likedBy;
     const [isPostLiked, setIsPostLiked] = useState(likedBy.includes(currentUserID));
@@ -50,9 +51,7 @@ export function Post ({ post }) {
         deleteObject(postImageReference).then(() => {
             deleteDoc(postReference).then(() => {
                 updateDoc(userDocumentReference, "uploads", newUserUploadsArray).then(() => {
-                    updateDoc(userDocumentReference, "numPosts", decrement(1)).then(() => {
-                        router.push(`/${currentUsername}/profile`);
-                    }).catch(error => console.log(error));
+                    router.push(`/${currentUsername}/profile`);
                 }).catch(error => console.log(error));
             }).catch(error => console.log(error));
         }).catch(error => console.log(error));
@@ -85,11 +84,18 @@ export function Post ({ post }) {
         <Card sx={{padding: "0.25rem"}}>
             <Paper elevation={5} sx={{ padding: "0.75rem" }}>
                 <Grid container direction="row" alignItems="center" justifyContent="space-between">
-                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => {
+                        const uploaderUsername = post.uploaderUsername;
+                        if(uploaderUsername === currentUsername) {
+                            console.log("ITS YOURSELF DUMBASS");
+                            return;
+                        }
+                        router.push(`/${uploaderUsername}/profile`);
+                    }}>
                         <Avatar sx={{ marginRight: "1rem" }} />
                         <Grid container direction="column">
                             <Typography fontSize="large" variant="overline" sx={{ lineHeight: "1.5rem", textTransform: "none" }}>{post.uploaderUsername}</Typography>
-                            <Typography fontSize={"small"}>{currentUserData.numFollowers} followers</Typography>
+                            <Typography fontSize={"small"}>{numFollowers} followers</Typography>
                         </Grid>
                     </Box>
                     <IconButton onClick={event => {

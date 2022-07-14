@@ -47,11 +47,10 @@ export function SignUp() {
                 email: signupEmail,
                 password: signupPassword,
                 username: signupUsername,
-                numPosts: 0,
-                numFollowers: 0,
-                numFollowing: 0,
                 uploads: [],
                 savedPosts: [],
+                followers: [],
+                following: [],
             }).then(() => {
                 setSignupEmail("");
                 setSignupPassword("");

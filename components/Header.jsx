@@ -26,10 +26,10 @@ export function Header() {
     const [wantsToUpload, setWantsToUpload] = useRecoilState(wantsToUploadBool)
 
     const asPath = router.asPath;
-    if(asPath.endsWith("profile") && !wantsToSeeProfile) {
-        const routes = router.asPath.split("/");
-        router.push(`/${routes[1]}`);
-    }
+    // if(asPath.endsWith("profile") && !wantsToSeeProfile) {
+    //     const routes = router.asPath.split("/");
+    //     router.push(`/${routes[1]}`);
+    // }
 
     const HeaderWithoutSession = () => (
         <AppBar position="static" sx={{marginBottom: "1rem"}}>
@@ -51,11 +51,11 @@ export function Header() {
         </AppBar>
     );
 
-    // const handleSignOut = () => {
-    //     signOut(auth).then(() => {
-    //         router.push("/");
-    //     })
-    // }
+    const handleSignOut = () => {
+        signOut(auth).then(() => {
+            router.push("/");
+        })
+    }
 
     const WithSessionRight = () => (
         <Box>
@@ -63,14 +63,13 @@ export function Header() {
                 {wantsToSeeProfile ? 
                     <IconButton onClick={() => {
                         setWantsToSeeProfile(false);
-                        const routes = router.asPath.split("/");
-                        router.push(`/${routes[1]}`);
+                        router.push(`/${currentUsername}/feed`);
                     }}>
                         <HomeIcon />
                     </IconButton> :
                     <IconButton onClick={() => {
                         setWantsToSeeProfile(true);
-                        router.replace(`${currentUsername}/profile`)
+                        router.push(`/${currentUsername}/profile`);
                     }}>
                         <AccountCircleRoundedIcon />
                     </IconButton>
@@ -78,9 +77,9 @@ export function Header() {
                 <IconButton onClick={() => {setWantsToUpload(true)}}>
                     <AddBoxRoundedIcon />
                 </IconButton>
-                {/* <IconButton onClick={handleSignOut}>
+                <IconButton onClick={handleSignOut}>
                     <LogoutIcon />
-                </IconButton> */}
+                </IconButton>
             </Grid>
         </Box>
     );
@@ -96,7 +95,8 @@ export function Header() {
 
     return (
         <>
-        { currentUserID ? <HeaderWithSession /> : asPath === "/" ?  <HeaderWithoutSession /> : <HeaderWithSession />}
+        {/* { currentUserID ? <HeaderWithSession /> : asPath === "/" ?  <HeaderWithoutSession /> : <HeaderWithSession />} */}
+        { currentUserID ? <HeaderWithSession /> : <HeaderWithoutSession />}
         </>
     );
 }
