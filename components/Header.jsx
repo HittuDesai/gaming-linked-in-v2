@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { AppBar, Button, Grid, IconButton } from '@mui/material';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import HomeIcon from '@mui/icons-material/Home';
-import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -76,9 +77,34 @@ export function Header() {
         })
     }
 
+    const currentAsPath = router.asPath;
+    const individualPaths = currentAsPath.split('/');
+    const isSeeingFeed = individualPaths.pop() === "feed"
+
     const WithSessionRight = () => (
         <Box>
             <Grid container direction="row" alignItems="center" justifyContent="center">
+                <IconButton onClick={() => setWantsToUpload(true)}>
+                    <AddBoxRoundedIcon />
+                </IconButton>
+                {wantsToSeeProfile ? 
+                    <IconButton onClick={handleSignOut}>
+                        <LogoutIcon />
+                    </IconButton> :
+                    <>{
+                        isSeeingFeed ?
+                        <IconButton onClick={() => {
+                            router.push(`/${currentUsername}/explore`);
+                        }}>
+                            <PeopleAltIcon />
+                        </IconButton> :
+                        <IconButton onClick={() => {
+                            router.push(`/${currentUsername}`);
+                        }}>
+                            <HomeIcon />
+                        </IconButton>
+                    }</>
+                }
                 {wantsToSeeProfile ? 
                     <IconButton onClick={() => {
                         setWantsToSeeProfile(false);
@@ -93,12 +119,6 @@ export function Header() {
                         <AccountCircleRoundedIcon />
                     </IconButton>
                 }
-                <IconButton onClick={() => {setWantsToUpload(true)}}>
-                    <AddBoxRoundedIcon />
-                </IconButton>
-                <IconButton onClick={handleSignOut}>
-                    <LogoutIcon />
-                </IconButton>
             </Grid>
         </Box>
     );

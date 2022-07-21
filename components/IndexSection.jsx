@@ -10,22 +10,8 @@ import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 export function IndexSection() {
-    // const router = useRouter();
     const wantsToSignin = useRecoilValue(wantsToSigninBool);
     const wantsToSignup = useRecoilValue(wantsToSignupBool);
-    // const setCurrentUserID = useSetRecoilState(userid);
-
-    // onAuthStateChanged(auth, (userCredentials) => {
-    //     console.log(userCredentials.uid);
-    //     if(!userCredentials) {
-    //         setCurrentUserID(null);
-    //         router.push("/");
-    //         return;
-    //     }
-    //     const currentUserID = userCredentials.uid;
-    //     setCurrentUserID(currentUserID);
-    //     router.push(`/fetch/${currentUserID}`);
-    // });
 
     return (
         <>

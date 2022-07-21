@@ -1,13 +1,10 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
-
 import { ProfileUserData } from "../../components/ProfileUserData";
 import { Post } from "../../components/Post";
 import { UploadModal } from "../../components/UploadModal";
 import { CircularProgress, Grid, Typography } from "@mui/material";
 
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { userdata, username } from "../../atoms/userAtom";
+import { useRecoilValue } from "recoil";
+import { username } from "../../atoms/userAtom";
 
 import { db } from "../../firebase"
 import { collection, doc, getDoc, getDocs, orderBy, query, where } from "firebase/firestore";
@@ -51,15 +48,6 @@ export async function getServerSideProps(context) {
     const { headers } = req;
     const { referer } = headers;
     const { username } = params;
-
-    // if(!referer) {
-    //     return {
-    //         redirect: {
-    //             destination: `/${username}`,
-    //             permanent: false,
-    //         }
-    //     }
-    // }
 
     let uploadsArray = [];
     const usersCollectionReference = collection(db, "users");
