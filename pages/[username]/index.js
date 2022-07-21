@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Feed } from "../../components/Feed"
 import { UploadModal } from "../../components/UploadModal";
 
@@ -7,7 +8,12 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { Grid, Typography } from "@mui/material";
 import ErrorIcon from '@mui/icons-material/Error';
 
+import { useRecoilValue } from "recoil";
+import { username } from "../../atoms/userAtom";
+import { useRouter } from "next/router";
+
 export default function UserHomePage({ userFound }) {
+
     return (
         <>{userFound ?
             <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
@@ -30,10 +36,17 @@ export async function getServerSideProps(context) {
     const usersCollectionReference = collection(db, "users");
     const usernameQuery = query(usersCollectionReference, where("username", "==", username));
     const querySnapshot = await getDocs(usernameQuery);
-    const doesQuerySnapshotExist = querySnapshot.empty;
-    return {
-        props: {
-            userFound: doesQuerySnapshotExist,
-        },
-    };
+    const userFound = !(querySnapshot.empty);
+    if(userFound) return { 
+        redirect: {
+            permanent: true,
+            destination: `/${username}/feed`
+        }
+    }
+    return { 
+        redirect: {
+            permanent: true,
+            destination: `/`
+        }
+    }
 }

@@ -10,6 +10,10 @@ import { db } from "../../firebase"
 import { collection, getDoc, getDocs, orderBy, query, where } from "firebase/firestore";
 
 export default function UserFeedPage({ feedArray, requestedUserData }) {
+    const loggedInUserData = useRecoilValue(userdata);
+    const loggedInUserID = loggedInUserData?.uid;
+    const requestedUserID = requestedUserData.uid;
+
     if(!feedArray)
         return (
             <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
@@ -18,9 +22,13 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
             </Grid>
         );
 
-    const loggedInUserData = useRecoilValue(userdata);
-    const loggedInUserID = loggedInUserData?.uid;
-    const requestedUserID = requestedUserData.uid;
+    if(!loggedInUserID)
+        return (
+            <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
+                <CircularProgress />
+                <Typography fontSize="small" variant="overline" sx={{marginTop: "1rem"}}>Fetching Your Data</Typography>
+            </Grid>
+        );
 
     if(requestedUserID !== loggedInUserID)
         return (
@@ -32,6 +40,7 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 
     return (
         <>
+            BRUH
             <Grid container direction="column">
                 {
                     feedArray.map((post, index) => {

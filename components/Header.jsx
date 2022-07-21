@@ -1,11 +1,12 @@
-import { AppBar, Button, Grid, IconButton, Typography } from '@mui/material';
+import { useEffect } from 'react';
+import { AppBar, Button, Grid, IconButton } from '@mui/material';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import HomeIcon from '@mui/icons-material/Home';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-import { useRecoilCallback, useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { wantsToSigninBool, wantsToSignupBool } from '../atoms/loginAtom';
 import { userdata, userid, username, wantsToSeeProfileBool } from '../atoms/userAtom';
 import { wantsToUploadBool } from "../atoms/actionsAtom";
@@ -15,21 +16,20 @@ import { auth, db } from '../firebase'
 import { useRouter } from 'next/router';
 import { Box } from '@mui/system';
 import { doc, getDoc } from 'firebase/firestore';
-import { useEffect } from 'react';
 
 export function Header() {
     const router = useRouter();
-    const [currentUserID, setCurrentUserID] = useRecoilState(userid);
-    useEffect(() => {
-        if(!currentUserID)
-            router.push("/");
-    }, []);
     const setCurrentUserData = useSetRecoilState(userdata);
+    const setWantsToUpload = useSetRecoilState(wantsToUploadBool);
+    const [currentUserID, setCurrentUserID] = useRecoilState(userid);
     const [currentUsername, setCurrentUsername] = useRecoilState(username);
     const [wantsToSeeProfile, setWantsToSeeProfile] = useRecoilState(wantsToSeeProfileBool);
     const [wantsToSignin, setWantsToSignin] = useRecoilState(wantsToSigninBool);
     const [wantsToSignup, setWantsToSignup] = useRecoilState(wantsToSignupBool);
-    const [wantsToUpload, setWantsToUpload] = useRecoilState(wantsToUploadBool);
+
+    useEffect(() => {
+        router.push(`/${currentUsername}`);
+    }, [currentUsername]);
 
     onAuthStateChanged(auth, userCredentials => {
         if(!userCredentials) {
@@ -44,16 +44,11 @@ export function Header() {
             const currentUserData = querySnapshot.data();
             setCurrentUserID(currentUserID);
             setCurrentUserData(currentUserData);
-            const currentUsername = currentUserData.username;
-            setCurrentUsername(currentUsername);
+            const loggedInUsername = currentUserData.username;
+            setCurrentUsername(loggedInUsername);
         })
         .catch(error => console.log(error));
     });
-
-    useRecoilCallback(() => {
-        console.log("DONE");
-        router.push(`/${currentUsername}`);
-    }, [userid, username, userdata]);
 
     const HeaderWithoutSession = () => (
         <AppBar position="static" sx={{marginBottom: "1rem"}}>
