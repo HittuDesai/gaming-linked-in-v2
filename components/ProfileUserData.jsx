@@ -10,10 +10,8 @@ import { userid } from "../atoms/userAtom";
 import { useRouter } from "next/router";
 
 export function ProfileUserData({ requestedUserData }) {
-    console.log(requestedUserData);
     const loggedInUserID = useRecoilValue(userid);
     const requestedUserID = requestedUserData.uid;
-    console.log({loggedInUserID, requestedUserID})
     const numPosts = requestedUserData.uploads?.length || 0;
     const numFollowers = requestedUserData.followers?.length || 0;
     const numFollowing = requestedUserData.following?.length || 0;

@@ -1,17 +1,14 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
 
-import { Avatar, Box, CircularProgress, Grid, IconButton, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { CircularProgress, Grid, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import { useRecoilValue } from "recoil";
 import { userdata } from "../../atoms/userAtom";
 
 import { db } from "../../firebase"
-import { arrayUnion, collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { ExplorePageUser } from "../../components/ExplorePageUser";
 
 export default function UserFeedPage({ usersArray, requestedUserData }) {
     const router = useRouter();
@@ -45,48 +42,11 @@ export default function UserFeedPage({ usersArray, requestedUserData }) {
             </Grid>
         );
 
-    const [isFollowFinished, setIsFollowFinished] = useState(false);
-    const handleFollow = userID => {
-        setIsFollowFinished(true);
-        const loggedInUserDocument = doc(db, `users/${loggedInUserID}`);
-        const requestedUserDocument = doc(db, `users/${userID}`);
-        updateDoc(requestedUserDocument, "followers", arrayUnion(loggedInUserID)).then(() => {
-            updateDoc(loggedInUserDocument, "following", arrayUnion(userID)).then(() => {
-                setIsFollowFinished(false);
-            })
-        })
-    }
-
     return (
         <>
-            <Grid container direction="column" padding="0 1rem">
-                {
-                    usersArray.map((user, index) => {
-                        const userID = user.uid;
-                        const username = user.username;
-                        const followers = user.followers;
-                        return (
-                            <Grid container direction="row" alignItems="center" justifyContent="space-between">
-                                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                    <Avatar sx={{ marginRight: "1rem" }} />
-                                    <Grid container direction="column">
-                                        <Typography fontSize="large" variant="overline" sx={{ lineHeight: "1.5rem", textTransform: "none" }}>{username}</Typography>
-                                        <Typography fontSize={"small"}>{followers?.length} followers</Typography>
-                                    </Grid>
-                                </Box>
-                                <Box>
-                                    <IconButton onClick={() => router.push(`/${user.username}/profile`)}>
-                                        <PersonSearchIcon />
-                                    </IconButton>
-                                    <LoadingButton sx={{ minWidth: "0" }} loading={isFollowFinished}>
-                                        <PersonAddIcon onClick={() => handleFollow(userID)}/>
-                                    </LoadingButton>
-                                </Box>
-                            </Grid>
-                        );
-                    })
-                }
-            </Grid>
+            <Grid container direction="column" padding="0 1rem">{
+                usersArray.map((user, index) => <ExplorePageUser key={index} user={user} />)
+            }</Grid>
         </>
     );
 }
@@ -99,7 +59,7 @@ export async function getServerSideProps(context) {
     let currentUserData = null;
     const usersCollectionReference = collection(db, "users");
     const querySnapshot = getDocs(usersCollectionReference);
-    const allUsers = (await querySnapshot).forEach(user => {
+    (await querySnapshot).forEach(user => {
         const userData = user.data();
         if(userData.username === username)
             currentUserData = userData;
