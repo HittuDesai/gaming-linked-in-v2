@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { AppBar, Button, Grid, IconButton } from '@mui/material';
+import { AppBar, Button, Grid, IconButton, Typography } from '@mui/material';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
@@ -81,53 +81,11 @@ export function Header() {
     const individualPaths = currentAsPath.split('/');
     const isSeeingFeed = individualPaths.pop() === "feed"
 
-    const WithSessionRight = () => (
-        <Box>
-            <Grid container direction="row" alignItems="center" justifyContent="center">
-                <IconButton onClick={() => setWantsToUpload(true)}>
-                    <AddBoxRoundedIcon />
-                </IconButton>
-                {wantsToSeeProfile ? 
-                    <IconButton onClick={handleSignOut}>
-                        <LogoutIcon />
-                    </IconButton> :
-                    <>{
-                        isSeeingFeed ?
-                        <IconButton onClick={() => {
-                            router.push(`/${currentUsername}/explore`);
-                        }}>
-                            <PeopleAltIcon />
-                        </IconButton> :
-                        <IconButton onClick={() => {
-                            router.push(`/${currentUsername}`);
-                        }}>
-                            <HomeIcon />
-                        </IconButton>
-                    }</>
-                }
-                {wantsToSeeProfile ? 
-                    <IconButton onClick={() => {
-                        setWantsToSeeProfile(false);
-                        router.push(`/${currentUsername}/feed`);
-                    }}>
-                        <HomeIcon />
-                    </IconButton> :
-                    <IconButton onClick={() => {
-                        setWantsToSeeProfile(true);
-                        router.push(`/${currentUsername}/profile`);
-                    }}>
-                        <AccountCircleRoundedIcon />
-                    </IconButton>
-                }
-            </Grid>
-        </Box>
-    );
-
     const HeaderWithSession = () => (
         <AppBar position="static" sx={{marginBottom: "1rem"}}>
             <Grid container direction="row" alignItems="center" justifyContent="space-between" padding="1rem">
                 <SportsEsportsIcon />
-                <WithSessionRight />
+                <Typography variant='overline' fontSize="large">Hittugram</Typography>
             </Grid>
         </AppBar>
     );
