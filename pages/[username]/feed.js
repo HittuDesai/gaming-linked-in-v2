@@ -19,7 +19,7 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
         );
 
     const loggedInUserData = useRecoilValue(userdata);
-    const loggedInUserID = loggedInUserData.uid;
+    const loggedInUserID = loggedInUserData?.uid;
     const requestedUserID = requestedUserData.uid;
 
     if(requestedUserID !== loggedInUserID)

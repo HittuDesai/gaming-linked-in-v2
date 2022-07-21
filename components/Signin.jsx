@@ -5,7 +5,7 @@ import { useSetRecoilState } from 'recoil';
 import { userid } from '../atoms/userAtom';
 
 import { auth } from '../firebase';
-import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, signOut } from "firebase/auth";
 import { useRouter } from 'next/router';
 
 export function SignIn() {
@@ -40,7 +40,7 @@ export function SignIn() {
             return;
         }
 
-        setPersistence(auth, browserSessionPersistence).then(() => {
+        setPersistence(auth, browserLocalPersistence).then(() => {
             signInWithEmailAndPassword(auth, signinEmail, signinPassword)
             .then((userCredential) => {
                 const currentUserID = userCredential.user.uid;
