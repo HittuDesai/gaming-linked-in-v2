@@ -7,17 +7,18 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 
 import { db } from "../firebase";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { userdata } from "../atoms/userAtom";
 
 export function ExplorePageUser({ user }) {
-    const userID = user.uid;
-    const username = user.username;
-    const followers = user.followers;
+    const [displayUserData, setDisplayUserData] = useState(user);
+    const userID = displayUserData.uid;
+    const username = displayUserData.username;
+    const followers = displayUserData.followers;
 
-    const loggedInUserData = useRecoilValue(userdata);
+    const [loggedInUserData, setLoggedInUserData] = useRecoilState(userdata);
     const loggedInUserID = loggedInUserData.uid;
     const followingOfLoggedInUser = loggedInUserData.following;
     const loggedInUserFollows = followingOfLoggedInUser.includes(userID);
@@ -29,7 +30,13 @@ export function ExplorePageUser({ user }) {
         const requestedUserDocument = doc(db, `users/${userID}`);
         updateDoc(requestedUserDocument, "followers", arrayUnion(loggedInUserID)).then(() => {
             updateDoc(loggedInUserDocument, "following", arrayUnion(userID)).then(() => {
-                setIsFollowFinished(false);
+                getDoc(requestedUserDocument)
+                .then(snapshot => setDisplayUserData(snapshot.data()))
+                .then(() => {
+                    getDoc(loggedInUserDocument)
+                    .then(snapshot => setLoggedInUserData(snapshot.data()))
+                    .then(() => setIsFollowFinished(false));
+                });
             })
         })
     }
@@ -41,7 +48,13 @@ export function ExplorePageUser({ user }) {
         const requestedUserDocument = doc(db, `users/${userID}`);
         updateDoc(requestedUserDocument, "followers", arrayRemove(loggedInUserID)).then(() => {
             updateDoc(loggedInUserDocument, "following", arrayRemove(userID)).then(() => {
-                setIsRemoveFollowFinished(false);
+                getDoc(requestedUserDocument)
+                .then(snapshot => setDisplayUserData(snapshot.data()))
+                .then(() => {
+                    getDoc(loggedInUserDocument)
+                    .then(snapshot => setLoggedInUserData(snapshot.data()))
+                    .then(() => setIsRemoveFollowFinished(false));
+                });
             })
         })
     }
@@ -56,7 +69,7 @@ export function ExplorePageUser({ user }) {
                 </Grid>
             </Box>
             <Box>
-                <IconButton onClick={() => router.push(`/${user.username}/profile`)}>
+                <IconButton onClick={() => router.push(`/${displayUserData.username}/profile`)}>
                     <PersonSearchIcon />
                 </IconButton>
                 {loggedInUserFollows ?
