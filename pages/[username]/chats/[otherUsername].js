@@ -1,3 +1,5 @@
+import { ChatArea } from "../../../components/ChatArea";
+
 import { db } from "../../../firebase"
 import { collection, getDocs, query, where } from "firebase/firestore";
 
@@ -9,7 +11,7 @@ export default function UserHomePage({ userFound, loggedInUserData, requestedUse
     return (
         <>{userFound ?
             <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
-                <>BRUH</>
+                <ChatArea loggedInUserData={loggedInUserData} requestedUserData={requestedUserData} />
             </Grid> :
             <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "100vh"}}>
                 <ErrorIcon fontSize="large" sx={{ color: "red" }}/>
