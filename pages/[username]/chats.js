@@ -1,19 +1,21 @@
-import { CircularProgress, Grid, Typography } from "@mui/material";
+import { ChatsPageUser } from "../../components/ChatsPageUser"
+
+import { CircularProgress, Grid, IconButton, TextField, InputAdornment, Typography, Autocomplete, Box, Avatar } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 
 import { useRecoilValue } from "recoil";
-import { userdata } from "../../atoms/userAtom";
+import { userdata, username } from "../../atoms/userAtom";
 
 import { db } from "../../firebase"
 import { collection, getDocs } from "firebase/firestore";
-import { ExplorePageUser } from "../../components/ExplorePageUser";
 
-export default function UserFeedPage({ usersArray, requestedUserData }) {
+import { Cancel, Search } from "@mui/icons-material";
+import { useRouter } from "next/router";
+
+export default function UserChatsPage({ usersArray, requestedUserData }) {
     const loggedInUserData = useRecoilValue(userdata);
     const loggedInUserID = loggedInUserData?.uid;
     const requestedUserID = requestedUserData.uid;
-
-    console.log(usersArray);
 
     if(!usersArray)
         return (
@@ -39,11 +41,42 @@ export default function UserFeedPage({ usersArray, requestedUserData }) {
             </Grid>
         );
 
+    const router = useRouter();
     return (
         <>
-            <Grid container direction="column" padding="0 1rem">{
-                usersArray.map((user, index) => <ExplorePageUser key={index} user={user} />)
-            }</Grid>
+            <Grid container direction="column" padding="0 1rem">
+                <Autocomplete
+                options={usersArray}
+                renderInput={params => <TextField fullWidth {...params} label="Search" />}
+
+                getOptionLabel={option => option.username}
+                renderOption={(props, option) => {
+                    const username = option.username;
+                    const followers = option.followers;
+                    return <Box key={option.uid} {...props} sx={{ display: "flex", alignItems: "center", justifyContent: "center", paddingLeft: "1rem" }}>
+                        <Avatar sx={{ marginRight: "1rem" }} />
+                        <Grid container direction="column">
+                            <Typography fontSize="large" variant="overline" sx={{ lineHeight: "1.5rem", textTransform: "none" }}>{username}</Typography>
+                            <Typography fontSize={"small"}>{followers?.length} followers</Typography>
+                        </Grid>
+                    </Box>
+                }}
+
+                onChange={(event, option) => {
+                    if(!option) return;
+                    const usernameOfOtherPerson = option.username;
+                    const currentAsPath = router.asPath;
+                    router.push(`${currentAsPath}/${usernameOfOtherPerson}`);
+                }}
+
+                autoComplete
+                selectOnFocus
+                clearIcon={null}
+                popupIcon={<Search />}
+                sx={{ width: "100%" }}
+                />
+                {/* {usersArray.map((user, index) => <ChatsPageUser key={index} user={user} />)} */}
+            </Grid>
         </>
     );
 }

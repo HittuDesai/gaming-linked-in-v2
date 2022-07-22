@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { ExplorePageUser } from "../../components/ExplorePageUser";
 
 import { CircularProgress, Grid, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -8,15 +9,12 @@ import { userdata } from "../../atoms/userAtom";
 
 import { db } from "../../firebase"
 import { collection, getDocs } from "firebase/firestore";
-import { ExplorePageUser } from "../../components/ExplorePageUser";
 
 export default function UserFeedPage({ usersArray, requestedUserData }) {
     const router = useRouter();
     const loggedInUserData = useRecoilValue(userdata);
     const loggedInUserID = loggedInUserData?.uid;
     const requestedUserID = requestedUserData.uid;
-
-    console.log(usersArray);
 
     if(!usersArray)
         return (

@@ -13,7 +13,7 @@ import { useRecoilState } from "recoil";
 import { userdata } from "../atoms/userAtom";
 import { useRouter } from "next/router";
 
-export function ExplorePageUser({ user }) {
+export function ChatsPageUser({ user }) {
     const router = useRouter();
     const [displayUserData, setDisplayUserData] = useState(user);
     const userID = displayUserData.uid;
@@ -75,10 +75,10 @@ export function ExplorePageUser({ user }) {
                     <PersonSearchIcon />
                 </IconButton>
                 {loggedInUserFollows ?
-                <LoadingButton sx={{ minWidth: "0", color: "white" }} loading={isRemoveFollowFinished}>
+                <LoadingButton sx={{ minWidth: "0" }} loading={isRemoveFollowFinished}>
                     <PersonRemoveIcon onClick={handleRemoveFollow} />
                 </LoadingButton> :
-                <LoadingButton sx={{ minWidth: "0", color: "white" }} loading={isFollowFinished}>
+                <LoadingButton sx={{ minWidth: "0" }} loading={isFollowFinished}>
                     <PersonAddIcon onClick={handleFollow} />
                 </LoadingButton>
                 }
