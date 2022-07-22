@@ -1,12 +1,12 @@
-import { ChatsPageUser } from "../../components/ChatsPageUser"
+import { ChatsPageUser } from "../../../components/ChatsPageUser"
 
 import { CircularProgress, Grid, IconButton, TextField, InputAdornment, Typography, Autocomplete, Box, Avatar } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 
 import { useRecoilValue } from "recoil";
-import { userdata, username } from "../../atoms/userAtom";
+import { userdata, username } from "../../../atoms/userAtom";
 
-import { db } from "../../firebase"
+import { db } from "../../../firebase"
 import { collection, getDocs } from "firebase/firestore";
 
 import { Cancel, Search } from "@mui/icons-material";
