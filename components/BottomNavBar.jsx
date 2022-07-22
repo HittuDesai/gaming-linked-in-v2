@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { BottomNavigation, BottomNavigationAction, IconButton, Paper } from '@mui/material';
+import { useRouter } from 'next/router';
+
+import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import HomeIcon from '@mui/icons-material/Home';
@@ -10,17 +12,13 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userid, username } from '../atoms/userAtom';
 import { wantsToUploadBool } from "../atoms/actionsAtom";
 
-import { auth, db } from '../firebase'
-import { useRouter } from 'next/router';
-import { doc, getDoc } from 'firebase/firestore';
-
 export function BottomNavBar() {
     const router = useRouter();
     const setWantsToUpload = useSetRecoilState(wantsToUploadBool);
     const currentUserID = useRecoilValue(userid);
     const currentUsername = useRecoilValue(username);
 
-    const [bottomBarValue, setBottomBarValue] = useState("");
+    const [bottomBarValue, setBottomBarValue] = useState("home");
     const handleBottomBarChange = (event, newValue) => {
         setBottomBarValue(newValue);
         switch (newValue) {

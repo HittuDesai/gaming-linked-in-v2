@@ -11,8 +11,10 @@ import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from "firebase/firest
 
 import { useRecoilState } from "recoil";
 import { userdata } from "../atoms/userAtom";
+import { useRouter } from "next/router";
 
 export function ExplorePageUser({ user }) {
+    const router = useRouter();
     const [displayUserData, setDisplayUserData] = useState(user);
     const userID = displayUserData.uid;
     const username = displayUserData.username;

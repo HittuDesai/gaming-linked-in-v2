@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Feed } from "../../components/Feed"
 import { UploadModal } from "../../components/UploadModal";
 
