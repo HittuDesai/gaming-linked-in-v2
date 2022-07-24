@@ -14,6 +14,10 @@ import { wantsToUploadBool } from "../atoms/actionsAtom";
 
 export function BottomNavBar() {
     const router = useRouter();
+    const routerPath = router.asPath;
+    const pathParts = routerPath.split("/");
+    if(pathParts.includes("chats") && pathParts.length === 4) return <></>;
+    
     const setWantsToUpload = useSetRecoilState(wantsToUploadBool);
     const currentUserID = useRecoilValue(userid);
     const currentUsername = useRecoilValue(username);
@@ -46,6 +50,7 @@ export function BottomNavBar() {
                 break;
         }
     }
+
     return (
         <>{ currentUserID && 
         <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0, padding: "0.5rem 2rem" }} elevation={0}>
