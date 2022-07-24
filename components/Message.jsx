@@ -6,10 +6,10 @@ import { userid } from "../atoms/userAtom";
 import { grey } from "@mui/material/colors";
 
 export function Message({ message }) {
-    const [currentMessage, setCurrentMessage] = useState(comment);
+    const [currentMessage, setCurrentMessage] = useState(message);
     const currentUserID = useRecoilValue(userid);
 
-    const messageTime = comment.messageTime;
+    const messageTime = currentMessage.messageTime;
     const messageTimeInDateFormat = new Date(messageTime.seconds * 1000 + messageTime.nanoseconds / 1000000);
     const messageTimeToDisplay = messageTimeInDateFormat.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric", });
 
@@ -35,21 +35,13 @@ export function Message({ message }) {
     // }
 
     return(
-        <Box sx={{ width: "100%" }}>
-            <Grid container direction="row" alignItems="center" justifyContent="space-between" sx={{ width: "100%" }}>
-                <Avatar sx={{ width: "2rem", height: "2rem" }} />
-                <Box flex="1" sx={{ marginLeft: "0.5rem" }}>
-                    <span>
-                        <Typography variant="caption" fontWeight="bolder" sx={{ paddingRight: "0.25rem" }}>{comment.commentedBy}</Typography>
-                        <Typography variant="caption">{message.messageText}</Typography>
-                    </span>
-                    <Grid container direction="row" alignItems="center" justifyContent="space-between">
-                        <Typography variant="caption" fontStyle="italic" color={grey[600]}>{messageTimeToDisplay}</Typography>
-                        <Typography variant="caption" fontStyle="italic" fontWeight="bolder" color={grey[600]}>{likedBy.length} likes</Typography>
-                        <Typography variant="caption" fontStyle="italic" color={grey[600]} sx={{ paddingRight: "2rem" }}>Reply</Typography>
-                    </Grid>
-                </Box>
-            </Grid>
-        </Box>
+        <Grid container direction="column" alignItems="flex-end" justifyContent="center" sx={{ paddingLeft: "8rem" }}>
+            <Box sx={{ background: "red", padding: "0.5rem", borderRadius: "0.5rem", maxWidth: "100%" }}>
+                <Typography variant="caption" fontSize="0.9rem">{message.messageText}</Typography>
+            </Box>
+            <Box>
+                <Typography variant="caption" fontStyle="italic" color={grey[600]}>{messageTimeToDisplay}</Typography>
+            </Box>
+        </Grid>
     );
 }

@@ -1,13 +1,12 @@
 import { ChatArea } from "../../../components/ChatArea";
 
 import { db } from "../../../firebase"
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDoc, getDocs, query, where, doc } from "firebase/firestore";
 
 import { Grid, Typography } from "@mui/material";
 import ErrorIcon from '@mui/icons-material/Error';
 
 export default function UserHomePage({ userFound, loggedInUserData, requestedUserData, messages }) {
-    console.log({ messages });
     return (
         <>{userFound ?
             <Grid container direction="column" alignItems="center" justifyContent="center" sx={{width: "100vw", height: "87vh"}}>
@@ -47,10 +46,10 @@ export async function getServerSideProps(context) {
     const userData = querySnapshot.docs[0].data();
     const otherUserData = otherQuerySnapshot.docs[0].data();
 
-    const chatsCollectionPath = `users/${userData.uid}/chats`;
-    const chatsCollection = collection(db, chatsCollectionPath);
-    const chatsSnapshot = await getDocs(chatsCollection);
-    if(chatsSnapshot.empty)
+    const chatDocumentReference = doc(db, `users/${userData.uid}/chats/${otherUserData.uid}`);
+    const chatDocument = await getDoc(chatDocumentReference);
+    const chatData = chatDocument.data();
+    if(!chatData)
         return { 
             props: {
                 userFound,
@@ -60,32 +59,9 @@ export async function getServerSideProps(context) {
             }
         }
 
-    const chatDocs = chatsSnapshot.docs;
-    let messageObjects = [];
-    for(const chatDoc in chatDocs) {
-        const chatID = chatDoc.id;
-        const chatData = chatDoc.data();
-        if(chatData.recieverID === otherUserData.uid) {
-            const messagesCollection = collection(db, `${chatsCollectionPath}/${chatID}/messages`);
-            const messagesSnapshot = await getDocs(messagesCollection);
-            if(messagesSnapshot.empty)
-                return { 
-                    props: {
-                        userFound,
-                        loggedInUserData: userData,
-                        requestedUserData: otherUserData,
-                        messages: [],
-                    }
-                }
-
-            const messageDocs = messagesSnapshot.docs;
-            for(const messageDoc in messageDocs) {
-                const messageID = messageDoc.id;
-                const messageData = messageDoc.data();
-                const messageObject = { ...messageData, messageID };
-                messageObjects.push(messageObject);
-            }
-        }
+    const messages = chatData.messages;
+    for(const message of messages) {
+        message.messageTime = message.messageTime.toJSON()
     }
 
     return { 
@@ -93,7 +69,7 @@ export async function getServerSideProps(context) {
             userFound,
             loggedInUserData: userData,
             requestedUserData: otherUserData,
-            messages: messageObjects,
+            messages,
         }
     }
 }
