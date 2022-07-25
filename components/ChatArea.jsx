@@ -35,19 +35,16 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
                 media: [],
                 startTimestamp: currentTime,
             }).then(() => {
-                console.log("Updated Logged In User Data");
                 setDoc(requestedUserChatDocument, {
                     messages: [messageObject],
                     media: [],
                     startTimestamp: currentTime,
                 }).then(() => {
-                    console.log("Updated Requested User Data");
                     getDoc(loggedInUserChatDocument).then(snapshot => {
                         const chatData = snapshot.data();
                         const newMessages = chatData.messages;
                         setChatText("");
                         setCurrentMessages(newMessages);
-                        console.log("Updated the List of Messages")
                     }).catch(error => console.log(error))
                 }).catch(error => console.log(error))
             }).catch(error => console.log(error));
@@ -56,17 +53,14 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
             updateDoc(loggedInUserChatDocument, {
                 messages: arrayUnion(messageObject),
             }).then(() => {
-                console.log("Updated Logged In User Data");
                 updateDoc(requestedUserChatDocument, {
                     messages: arrayUnion(messageObject),
                 }).then(() => {
-                    console.log("Updated Requested User Data");
                     getDoc(loggedInUserChatDocument).then(snapshot => {
                         const chatData = snapshot.data();
                         const newMessages = chatData.messages;
                         setChatText("");
                         setCurrentMessages(newMessages);
-                        console.log("Updated the List of Messages")
                     }).catch(error => console.log(error))
                 }).catch(error => console.log(error))
             }).catch(error => console.log(error));

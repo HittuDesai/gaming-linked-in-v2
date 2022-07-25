@@ -6,11 +6,14 @@ import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import HomeIcon from '@mui/icons-material/Home';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userid, username } from '../atoms/userAtom';
 import { wantsToUploadBool } from "../atoms/actionsAtom";
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
 export function BottomNavBar() {
     const router = useRouter();
@@ -45,6 +48,10 @@ export function BottomNavBar() {
             case "profile":
                 router.push(`/${currentUsername}/profile`)
                 break;
+
+            case "logour":
+                signOut(auth);
+                break;
         
             default:
                 break;
@@ -71,10 +78,16 @@ export function BottomNavBar() {
                 value="chats"
                 icon={<QuestionAnswerIcon />}
                 />
+                
+                {bottomBarValue === "profile" ? 
                 <BottomNavigationAction
                 value="profile"
+                icon={<LogoutIcon />}
+                /> :
+                <BottomNavigationAction
+                value="logout"
                 icon={<AccountCircleRoundedIcon />}
-                />
+                />}
             </BottomNavigation>
         </Paper>
         }</>

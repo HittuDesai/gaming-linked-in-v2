@@ -3,20 +3,22 @@ import { Avatar, Box, Button, Divider, Grid, Stack, Typography } from "@mui/mate
 import { LoadingButton } from "@mui/lab";
 
 import { db } from "../firebase";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, updateDoc, arrayRemove, getDoc } from "firebase/firestore";
 
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userdata } from "../atoms/userAtom";
 import { useRouter } from "next/router";
 
 export function ProfileUserData({ requestedUserData }) {
+    const [displayUserData, setDisplayUserData] = useState(requestedUserData);
+    const setLoggedInUserData = useSetRecoilState(userdata);
     const loggedInUserData = useRecoilValue(userdata);
     const loggedInUserID = loggedInUserData?.uid;
     const loggedInUserFollowing = loggedInUserData?.following;
-    const requestedUserID = requestedUserData.uid;
-    const numPosts = requestedUserData.uploads?.length || 0;
-    const numFollowers = requestedUserData.followers?.length || 0;
-    const numFollowing = requestedUserData.following?.length || 0;
+    const requestedUserID = displayUserData.uid;
+    const numPosts = displayUserData.uploads?.length || 0;
+    const numFollowers = displayUserData.followers?.length || 0;
+    const numFollowing = displayUserData.following?.length || 0;
 
     const [isFollowFinished, setIsFollowFinished] = useState(false);
     const handleFollow = () => {
@@ -59,7 +61,7 @@ export function ProfileUserData({ requestedUserData }) {
             <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
                 <Box sx={{ height: "5rem", aspectRatio: "1" }}>
                     <Avatar sx={{ width: "100%", height: "100%" }} />
-                    {/* src={requestedUserData} */}
+                    {/* src={displayUserData} */}
                 </Box>
                 <Stack align="center">
                     <Typography fontSize="large">{numPosts}</Typography>
