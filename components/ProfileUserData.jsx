@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { Avatar, Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Divider, Grid, IconButton, Stack, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import LogoutIcon from '@mui/icons-material/Logout';
 
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
 import { arrayUnion, doc, updateDoc, arrayRemove, getDoc } from "firebase/firestore";
 
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userdata } from "../atoms/userAtom";
 import { useRouter } from "next/router";
+import { signOut } from "firebase/auth";
+import { red } from "@mui/material/colors";
 
 export function ProfileUserData({ requestedUserData }) {
     const [displayUserData, setDisplayUserData] = useState(requestedUserData);
@@ -76,18 +79,27 @@ export function ProfileUserData({ requestedUserData }) {
                     <Typography fontSize="small">FOLLOWING</Typography>
                 </Stack>
             </Grid>
-            {requestedUserID === loggedInUserID ?
-            <Button fullWidth variant="contained" sx={{ margin: "1.5rem 0" }} onClick={() => console.warn("CANNOT EDIT FORM IN THIS VERSION OF THE APP")}>
-                Edit Profile
-            </Button> : <>{
-                loggedInUserFollowing?.includes(requestedUserID) ? 
-                <LoadingButton loading={isRemoveFollowFinished} fullWidth variant="contained" sx={{ margin: "1.5rem 0" }} onClick={handleRemoveFollow}>
-                    Following
-                </LoadingButton> :
-                <LoadingButton loading={isFollowFinished} fullWidth variant="contained" sx={{ margin: "1.5rem 0" }} onClick={handleFollow}>
-                    Follow
-                </LoadingButton>
-            }</>}
+            <Grid container alignItems="center" justifyContent="space-between" columnGap="1rem">
+                <Grid item flexGrow={1}>
+                    {requestedUserID === loggedInUserID ?
+                    <Button fullWidth variant="contained" sx={{ margin: "1.5rem 0" }} onClick={() => console.warn("CANNOT EDIT FORM IN THIS VERSION OF THE APP")}>
+                        Edit Profile
+                    </Button> : <>{
+                        loggedInUserFollowing?.includes(requestedUserID) ? 
+                        <LoadingButton fullWidth loading={isRemoveFollowFinished} variant="contained" sx={{ margin: "1.5rem 0" }} onClick={handleRemoveFollow}>
+                            Following
+                        </LoadingButton> :
+                        <LoadingButton fullWidth loading={isFollowFinished} variant="contained" sx={{ margin: "1.5rem 0" }} onClick={handleFollow}>
+                            Follow
+                        </LoadingButton>
+                    }</>}
+                </Grid>
+                <Grid item>
+                    <Button color="error" variant="contained" onClick={() => signOut(auth)}>
+                        <LogoutIcon />
+                    </Button>
+                </Grid>
+            </Grid>
             <Divider><Typography variant="overline">Uploads</Typography></Divider>
         </Stack>
     );
