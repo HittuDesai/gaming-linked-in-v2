@@ -2,16 +2,15 @@ import { Stack, Typography } from "@mui/material";
 import { Message } from "./Message";
 import { grey } from "@mui/material/colors";
 
-export function MessagesSection({ messages }) {
-	// comments.sort((a, b) => b.commentTime - a.commentTime);
-
+export function MessagesSection({ messages, height }) {
 	return (
 		<Stack
 			sx={{
-				marginTop: "1rem",
+				paddingTop: "2rem",
 				overflow: "hidden",
 				overflowY: "scroll",
 				width: "100%",
+				maxHeight: height,
 			}}
 		>
 			{messages?.length === 0 && (

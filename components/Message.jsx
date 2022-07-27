@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Avatar, Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 
 import { useRecoilValue } from "recoil";
 import { userid } from "../atoms/userAtom";
@@ -7,7 +7,6 @@ import { grey } from "@mui/material/colors";
 
 export function Message({ message }) {
 	const [currentMessage, setCurrentMessage] = useState(message);
-	const currentUserID = useRecoilValue(userid);
 
 	const messageTime = currentMessage.messageTime;
 	const messageTimeInDateFormat = new Date(
@@ -56,7 +55,7 @@ export function Message({ message }) {
 				}}
 			>
 				<Typography variant="caption" fontSize="0.9rem">
-					{message.messageText}
+					{currentMessage.messageText}
 				</Typography>
 			</Box>
 			<Box>

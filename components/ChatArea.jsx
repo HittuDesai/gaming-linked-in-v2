@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 import { MessagesSection } from "./MessagesSection";
 
 import {
@@ -9,23 +10,17 @@ import {
 	Typography,
 	IconButton,
 } from "@mui/material";
+import { Send } from "@mui/icons-material";
 
 import { db } from "../firebase";
 import {
-	addDoc,
-	arrayRemove,
 	arrayUnion,
-	collection,
 	doc,
 	getDoc,
-	serverTimestamp,
 	setDoc,
 	Timestamp,
 	updateDoc,
 } from "firebase/firestore";
-
-import { useRouter } from "next/router";
-import { Send } from "@mui/icons-material";
 
 export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
 	const [currentMessages, setCurrentMessages] = useState(messages);
@@ -102,8 +97,22 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
 		}
 	};
 
+	const enclosingGridRef = useRef(null);
+	const avatarGridRef = useRef(null);
+	const inputRef = useRef(null);
+	const [heightOfMessageSection, setMessageSectionHeight] = useState(0);
+	useEffect(() => {
+		const heightOfEnclosingGrid = enclosingGridRef.current.clientHeight;
+		const heightOfAvatarGrid = avatarGridRef.current.clientHeight;
+		const heightOfInputField = inputRef.current.clientHeight;
+		const sizeOfMessageSection =
+			heightOfEnclosingGrid - heightOfAvatarGrid - heightOfInputField;
+		setMessageSectionHeight(sizeOfMessageSection - 50);
+	}, []);
+
 	return (
 		<Grid
+			ref={enclosingGridRef}
 			container
 			direction="column"
 			alignItems="center"
@@ -112,6 +121,7 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
 			sx={{ width: "100%", height: "100%" }}
 		>
 			<Grid
+				ref={avatarGridRef}
 				container
 				direction="column"
 				alignItems="center"
@@ -139,9 +149,19 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
 				alignItems="center"
 				justifyContent="end"
 				rowGap="1rem"
+				sx={{
+					flexGrow: 1,
+					borderColor: "green",
+				}}
 			>
-				<MessagesSection messages={currentMessages} />
+				<Grid flexGrow={1}>
+					<MessagesSection
+						messages={currentMessages}
+						height={heightOfMessageSection}
+					/>
+				</Grid>
 				<OutlinedInput
+					ref={inputRef}
 					fullWidth
 					value={chatText}
 					onChange={handleChatTextChange}
@@ -151,6 +171,11 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
 						</IconButton>
 					}
 					sx={{ borderRadius: "10rem", paddingLeft: "0.6rem" }}
+					onKeyDown={event => {
+						const keyCode = event.code;
+						if (keyCode !== "Enter") return;
+						handleSendText();
+					}}
 				/>
 			</Grid>
 		</Grid>
