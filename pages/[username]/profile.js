@@ -1,10 +1,8 @@
+import { HeaderAndBottomAdder } from "../../components/HeaderAndBottomAdder";
 import { ProfileUserData } from "../../components/ProfileUserData";
 import { Post } from "../../components/Post";
 import { UploadModal } from "../../components/UploadModal";
 import { CircularProgress, Grid, Typography } from "@mui/material";
-
-import { useRecoilValue } from "recoil";
-import { username } from "../../atoms/userAtom";
 
 import { db } from "../../firebase";
 import {
@@ -39,7 +37,7 @@ export default function UserProfilePage({ uploadsArray, requestedUserData }) {
 		);
 
 	return (
-		<>
+		<HeaderAndBottomAdder>
 			{uploadsArray ? (
 				<>
 					<Grid container direction="column">
@@ -70,7 +68,7 @@ export default function UserProfilePage({ uploadsArray, requestedUserData }) {
 					</Typography>
 				</Grid>
 			)}
-		</>
+		</HeaderAndBottomAdder>
 	);
 }
 

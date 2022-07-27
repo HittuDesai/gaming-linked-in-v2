@@ -1,3 +1,4 @@
+import { HeaderAndBottomAdder } from "../../../components/HeaderAndBottomAdder";
 import { ChatArea } from "../../../components/ChatArea";
 
 import { db } from "../../../firebase";
@@ -20,7 +21,7 @@ export default function UserHomePage({
 	messages,
 }) {
 	return (
-		<>
+		<HeaderAndBottomAdder>
 			{userFound ? (
 				<Grid
 					container
@@ -57,7 +58,7 @@ export default function UserHomePage({
 					</Typography>
 				</Grid>
 			)}
-		</>
+		</HeaderAndBottomAdder>
 	);
 }
 

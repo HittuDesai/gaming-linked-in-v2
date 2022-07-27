@@ -1,5 +1,6 @@
 import { Post } from "../../components/Post";
 import { UploadModal } from "../../components/UploadModal";
+import { HeaderAndBottomAdder } from "../../components/HeaderAndBottomAdder";
 import { CircularProgress, Grid, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 
@@ -83,7 +84,7 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 		);
 
 	return (
-		<>
+		<HeaderAndBottomAdder>
 			BRUH
 			<Grid container direction="column">
 				{feedArray.map((post, index) => {
@@ -91,7 +92,7 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 				})}
 			</Grid>
 			<UploadModal />
-		</>
+		</HeaderAndBottomAdder>
 	);
 }
 

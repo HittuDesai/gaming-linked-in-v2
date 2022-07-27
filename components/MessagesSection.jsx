@@ -3,7 +3,6 @@ import { Message } from "./Message";
 import { grey } from "@mui/material/colors";
 
 export function MessagesSection({ messages, height }) {
-	console.log(height);
 	return (
 		<Stack
 			rowGap="1rem"

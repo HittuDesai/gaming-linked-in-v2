@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
 	Avatar,
 	Box,
 	Button,
 	Divider,
 	Grid,
-	IconButton,
 	Stack,
 	Typography,
 } from "@mui/material";
@@ -25,9 +24,9 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userdata } from "../atoms/userAtom";
 import { useRouter } from "next/router";
 import { signOut } from "firebase/auth";
-import { red } from "@mui/material/colors";
 
 export function ProfileUserData({ requestedUserData }) {
+	const router = useRouter();
 	const [displayUserData, setDisplayUserData] = useState(requestedUserData);
 	const setLoggedInUserData = useSetRecoilState(userdata);
 	const loggedInUserData = useRecoilValue(userdata);
@@ -171,7 +170,9 @@ export function ProfileUserData({ requestedUserData }) {
 					<Button
 						color="error"
 						variant="contained"
-						onClick={() => signOut(auth)}
+						onClick={() => {
+							signOut(auth).then(() => router.push("/"));
+						}}
 					>
 						<LogoutIcon />
 					</Button>

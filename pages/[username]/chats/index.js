@@ -1,4 +1,5 @@
 import { ChatsPageUser } from "../../../components/ChatsPageUser";
+import { HeaderAndBottomAdder } from "../../../components/HeaderAndBottomAdder";
 
 import {
 	CircularProgress,
@@ -92,7 +93,7 @@ export default function UserChatsPage({
 		);
 
 	return (
-		<>
+		<HeaderAndBottomAdder>
 			<Grid container direction="column" padding="0 1rem">
 				<Autocomplete
 					options={usersArray}
@@ -151,7 +152,7 @@ export default function UserChatsPage({
 					<ChatsPageUser key={index} user={user} />
 				))}
 			</Grid>
-		</>
+		</HeaderAndBottomAdder>
 	);
 }
 

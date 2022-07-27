@@ -1,3 +1,4 @@
+import { HeaderAndBottomAdder } from "../../components/HeaderAndBottomAdder";
 import { Feed } from "../../components/Feed";
 import { UploadModal } from "../../components/UploadModal";
 
@@ -9,7 +10,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 
 export default function UserHomePage({ userFound }) {
 	return (
-		<>
+		<HeaderAndBottomAdder>
 			{userFound ? (
 				<Grid
 					container
@@ -43,7 +44,7 @@ export default function UserHomePage({ userFound }) {
 					</Typography>
 				</Grid>
 			)}
-		</>
+		</HeaderAndBottomAdder>
 	);
 }
 

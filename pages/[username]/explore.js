@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { HeaderAndBottomAdder } from "../../components/HeaderAndBottomAdder";
 import { ExplorePageUser } from "../../components/ExplorePageUser";
 
 import { CircularProgress, Grid, Typography } from "@mui/material";
@@ -11,7 +11,6 @@ import { db } from "../../firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function UserFeedPage({ usersArray, requestedUserData }) {
-	const router = useRouter();
 	const loggedInUserData = useRecoilValue(userdata);
 	const loggedInUserID = loggedInUserData?.uid;
 	const requestedUserID = requestedUserData.uid;
@@ -78,13 +77,13 @@ export default function UserFeedPage({ usersArray, requestedUserData }) {
 		);
 
 	return (
-		<>
+		<HeaderAndBottomAdder>
 			<Grid container direction="column" padding="0 1rem">
 				{usersArray.map((user, index) => (
 					<ExplorePageUser key={index} user={user} />
 				))}
 			</Grid>
-		</>
+		</HeaderAndBottomAdder>
 	);
 }
 

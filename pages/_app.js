@@ -1,8 +1,10 @@
-import { Header } from "../components/Header";
 import { RecoilRoot } from "recoil";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
-import { BottomNavBar } from "../components/BottomNavBar";
+import { auth, db } from "../firebase";
+import { useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 function App({ Component, pageProps }) {
 	const darkTheme = createTheme({
@@ -15,9 +17,7 @@ function App({ Component, pageProps }) {
 		<ThemeProvider theme={darkTheme}>
 			<RecoilRoot>
 				<CssBaseline />
-				<Header />
 				<Component {...pageProps} />
-				<BottomNavBar />
 			</RecoilRoot>
 		</ThemeProvider>
 	);

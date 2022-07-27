@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import { Button, Box, Grid, TextField, Typography } from "@mui/material";
 
-import { useSetRecoilState } from "recoil";
-import { userid } from "../atoms/userAtom";
-
 import { auth } from "../firebase";
 import {
 	signInWithEmailAndPassword,
 	setPersistence,
 	browserLocalPersistence,
-	signOut,
 } from "firebase/auth";
 import { useRouter } from "next/router";
 
@@ -19,8 +15,6 @@ export function SignIn() {
 	const [signinEmailError, setSigninEmailError] = useState("");
 	const [signinPassword, setSigninPassword] = useState("");
 	const [signinPasswordError, setSigninPasswordError] = useState("");
-
-	const setCurrentUserID = useSetRecoilState(userid);
 
 	const handleSignIn = event => {
 		event.preventDefault();
@@ -51,10 +45,20 @@ export function SignIn() {
 
 		setPersistence(auth, browserLocalPersistence).then(() => {
 			signInWithEmailAndPassword(auth, signinEmail, signinPassword)
-				.then(userCredential => {
+				.then(async userCredential => {
 					const currentUserID = userCredential.user.uid;
-					setCurrentUserID(currentUserID);
-					router.replace(`/fetch/${currentUserID}`);
+					const usersCollectionReference = collection(db, "users");
+					const usernameQuery = query(
+						usersCollectionReference,
+						where("uid", "==", currentUserID)
+					);
+					const querySnapshot = await getDocs(usernameQuery);
+					const userFound = !querySnapshot.empty;
+					if (userFound) {
+						const currentUsername =
+							querySnapshot.docs[0].data().username;
+						router.push(`/${currentUsername}`);
+					}
 				})
 				.catch(error => {
 					const errorCode = error.code;
