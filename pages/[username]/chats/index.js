@@ -148,9 +148,9 @@ export default function UserChatsPage({
 					popupIcon={<Search />}
 					sx={{ width: "100%" }}
 				/>
-				{allChatsUsers.map((user, index) => (
+				{/* {allChatsUsers.map((user, index) => (
 					<ChatsPageUser key={index} user={user} />
-				))}
+				))} */}
 			</Grid>
 		</HeaderAndBottomAdder>
 	);
@@ -160,41 +160,49 @@ export async function getServerSideProps(context) {
 	const { params } = context;
 	const { username } = params;
 
-	let usersArray = [];
-	let currentUserData = null;
+	// let usersArray = [];
+	// let currentUserData = null;
+	// const usersCollectionReference = collection(db, "users");
+	// const usersSnapshot = getDocs(usersCollectionReference);
+	// (await usersSnapshot).forEach(user => {
+	// 	const userData = user.data();
+	// 	if (userData.username === username) currentUserData = userData;
+	// 	else usersArray.push(userData);
+	// });
+
 	const usersCollectionReference = collection(db, "users");
-	const usersSnapshot = getDocs(usersCollectionReference);
-	(await usersSnapshot).forEach(user => {
-		const userData = user.data();
-		if (userData.username === username) currentUserData = userData;
-		else usersArray.push(userData);
-	});
-
-	const currentUserID = currentUserData.uid;
-	const chatsCollectionReference = collection(
-		db,
-		`users/${currentUserID}/chats`
+	const usernameQuery = query(
+		usersCollectionReference,
+		where("username", "==", username)
 	);
-	const chatsSnapshot = getDocs(chatsCollectionReference);
-	let allOtherUserIDsWithChats = [];
-	(await chatsSnapshot).forEach(chatDocument => {
-		const chatID = chatDocument.id;
-		allOtherUserIDsWithChats.push(chatID);
-	});
+	const querySnapshot = await getDocs(usernameQuery);
+	const currentUserData = querySnapshot.docs[0].data();
 
-	let allOtherUserDatasWithChats = [];
-	for (const userID of allOtherUserIDsWithChats) {
-		const userDocumentReference = doc(db, `users/${userID}`);
-		const userSnapshot = await getDoc(userDocumentReference);
-		const userData = userSnapshot.data();
-		allOtherUserDatasWithChats.push(userData);
-	}
+	// const currentUserID = currentUserData.uid;
+	// const chatsCollectionReference = collection(
+	// 	db,
+	// 	`users/${currentUserID}/chats`
+	// );
+	// const chatsSnapshot = getDocs(chatsCollectionReference);
+	// let allOtherUserIDsWithChats = [];
+	// (await chatsSnapshot).forEach(chatDocument => {
+	// 	const chatID = chatDocument.id;
+	// 	allOtherUserIDsWithChats.push(chatID);
+	// });
+
+	// let allOtherUserDatasWithChats = [];
+	// for (const userID of allOtherUserIDsWithChats) {
+	// 	const userDocumentReference = doc(db, `users/${userID}`);
+	// 	const userSnapshot = await getDoc(userDocumentReference);
+	// 	const userData = userSnapshot.data();
+	// 	allOtherUserDatasWithChats.push(userData);
+	// }
 
 	return {
 		props: {
 			usersArray,
 			requestedUserData: currentUserData,
-			allChatsUsers: allOtherUserDatasWithChats,
+			// allChatsUsers: allOtherUserDatasWithChats,
 		},
 	};
 }
