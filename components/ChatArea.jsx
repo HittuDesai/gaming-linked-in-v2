@@ -9,8 +9,12 @@ import {
 	OutlinedInput,
 	Typography,
 	IconButton,
+	Box,
+	Paper,
 } from "@mui/material";
 import { Send } from "@mui/icons-material";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { db } from "../firebase";
 import {
@@ -100,63 +104,71 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
 	};
 
 	const enclosingGridRef = useRef(null);
-	const avatarGridRef = useRef(null);
 	const inputRef = useRef(null);
 	const [heightOfMessageSection, setMessageSectionHeight] = useState(0);
 	useEffect(() => {
 		const heightOfEnclosingGrid = enclosingGridRef.current.clientHeight;
-		const heightOfAvatarGrid = avatarGridRef.current.clientHeight;
 		const heightOfInputField = inputRef.current.clientHeight;
-		const sizeOfMessageSection =
-			heightOfEnclosingGrid - heightOfAvatarGrid - heightOfInputField;
-		setMessageSectionHeight(sizeOfMessageSection - 50);
+		setMessageSectionHeight(heightOfEnclosingGrid - heightOfInputField);
 	}, []);
 
 	return (
-		<Grid
-			ref={enclosingGridRef}
-			container
-			direction="column"
-			alignItems="center"
-			justifyContent="space-between"
-			padding="1rem"
-			sx={{ width: "100%", height: "100%" }}
-		>
+		<>
+			<Paper elevation={24} sx={{ width: "100%" }}>
+				<Grid
+					container
+					direction="row"
+					alignItems="center"
+					justifyContent="space-between"
+					sx={{ width: "100%", padding: "1rem" }}
+				>
+					<Box
+						sx={{
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+						}}
+					>
+						<Avatar sx={{ marginRight: "0.5rem" }} />
+						<Typography
+							fontSize="large"
+							variant="overline"
+							sx={{ lineHeight: "1.5rem", textTransform: "none" }}
+						>
+							{requestedUsername}
+						</Typography>
+					</Box>
+					<Box
+						sx={{
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+						}}
+					>
+						<IconButton
+							onClick={() =>
+								router.push(`/${requestedUsername}/profile`)
+							}
+						>
+							<PersonSearchIcon />
+						</IconButton>
+						<IconButton onClick={() => router.back()}>
+							<ArrowBackIcon />
+						</IconButton>
+					</Box>
+				</Grid>
+			</Paper>
 			<Grid
-				ref={avatarGridRef}
 				container
 				direction="column"
 				alignItems="center"
 				justifyContent="end"
-				rowGap="1rem"
-			>
-				<Avatar />
-				<Typography
-					fontSize="large"
-					variant="overline"
-					sx={{ lineHeight: "1.5rem", textTransform: "none" }}
-				>
-					{requestedUsername}
-				</Typography>
-				<Button
-					variant="contained"
-					onClick={() => router.push(`/${requestedUsername}/profile`)}
-				>
-					View Full Profile
-				</Button>
-			</Grid>
-			<Grid
-				container
-				direction="column"
-				alignItems="center"
-				justifyContent="end"
-				rowGap="1rem"
 				sx={{
 					flexGrow: 1,
 					borderColor: "green",
 				}}
 			>
-				<Grid flexGrow={1}>
+				<Grid flexGrow={1} ref={enclosingGridRef} padding="1rem">
 					<MessagesSection
 						messages={currentMessages}
 						height={heightOfMessageSection}
@@ -180,6 +192,6 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
 					}}
 				/>
 			</Grid>
-		</Grid>
+		</>
 	);
 }

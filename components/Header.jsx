@@ -60,7 +60,7 @@ export function Header() {
 	});
 
 	const HeaderWithoutSession = () => (
-		<AppBar position="static" sx={{ marginBottom: "1rem" }}>
+		<AppBar position="static">
 			<Grid
 				container
 				direction="row"
@@ -110,7 +110,7 @@ export function Header() {
 	const isSeeingFeed = individualPaths.pop() === "feed";
 
 	const HeaderWithSession = () => (
-		<AppBar position="static" sx={{ marginBottom: "1rem" }}>
+		<AppBar position="static">
 			<Grid
 				container
 				direction="row"

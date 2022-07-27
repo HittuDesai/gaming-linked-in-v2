@@ -3,7 +3,6 @@ import { Box, Grid, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
 export function Message({ message, scrollIntoViewBool }) {
-	console.log(scrollIntoViewBool);
 	const [currentMessage, setCurrentMessage] = useState(message);
 
 	const messageTime = currentMessage.messageTime;

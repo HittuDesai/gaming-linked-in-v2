@@ -3,10 +3,10 @@ import { Message } from "./Message";
 import { grey } from "@mui/material/colors";
 
 export function MessagesSection({ messages, height }) {
+	console.log(height);
 	return (
 		<Stack
 			sx={{
-				paddingTop: "2rem",
 				overflow: "hidden",
 				overflowY: "scroll",
 				width: "100%",
