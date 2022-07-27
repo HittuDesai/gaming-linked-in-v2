@@ -4,7 +4,6 @@ import { MessagesSection } from "./MessagesSection";
 
 import {
 	Avatar,
-	Button,
 	Grid,
 	OutlinedInput,
 	Typography,
@@ -174,23 +173,28 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
 						height={heightOfMessageSection}
 					/>
 				</Grid>
-				<OutlinedInput
-					ref={inputRef}
-					fullWidth
-					value={chatText}
-					onChange={handleChatTextChange}
-					endAdornment={
-						<IconButton onClick={handleSendText}>
-							<Send />
-						</IconButton>
-					}
-					sx={{ borderRadius: "10rem", paddingLeft: "0.6rem" }}
-					onKeyDown={event => {
-						const keyCode = event.code;
-						if (keyCode !== "Enter") return;
-						handleSendText();
-					}}
-				/>
+				<Grid padding="0 1rem" sx={{ width: "100%" }}>
+					<OutlinedInput
+						ref={inputRef}
+						fullWidth
+						value={chatText}
+						onChange={handleChatTextChange}
+						endAdornment={
+							<IconButton onClick={handleSendText}>
+								<Send />
+							</IconButton>
+						}
+						sx={{
+							borderRadius: "10rem",
+							paddingLeft: "0.6rem",
+						}}
+						onKeyDown={event => {
+							const keyCode = event.code;
+							if (keyCode !== "Enter") return;
+							handleSendText();
+						}}
+					/>
+				</Grid>
 			</Grid>
 		</>
 	);

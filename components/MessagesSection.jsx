@@ -6,6 +6,7 @@ export function MessagesSection({ messages, height }) {
 	console.log(height);
 	return (
 		<Stack
+			rowGap="1rem"
 			sx={{
 				overflow: "hidden",
 				overflowY: "scroll",
