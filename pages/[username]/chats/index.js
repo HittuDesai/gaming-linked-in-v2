@@ -166,25 +166,15 @@ export default function UserChatsPage({
 export async function getServerSideProps(context) {
 	const { params } = context;
 	const { username } = params;
-
-	// let usersArray = [];
-	// let currentUserData = null;
-	// const usersCollectionReference = collection(db, "users");
-	// const usersSnapshot = getDocs(usersCollectionReference);
-	// (await usersSnapshot).forEach(user => {
-	// 	const userData = user.data();
-	// 	if (userData.username === username) currentUserData = userData;
-	// 	else usersArray.push(userData);
-	// });
-
+	let usersArray = [];
+	let currentUserData = null;
 	const usersCollectionReference = collection(db, "users");
-	const usernameQuery = query(
-		usersCollectionReference,
-		where("username", "==", username)
-	);
-	const querySnapshot = await getDocs(usernameQuery);
-	const currentUserData = querySnapshot.docs[0].data();
-
+	const usersSnapshot = getDocs(usersCollectionReference);
+	(await usersSnapshot).forEach(user => {
+		const userData = user.data();
+		if (userData.username === username) currentUserData = userData;
+		else usersArray.push(userData);
+	});
 	// const currentUserID = currentUserData.uid;
 	// const chatsCollectionReference = collection(
 	// 	db,
@@ -196,7 +186,6 @@ export async function getServerSideProps(context) {
 	// 	const chatID = chatDocument.id;
 	// 	allOtherUserIDsWithChats.push(chatID);
 	// });
-
 	// let allOtherUserDatasWithChats = [];
 	// for (const userID of allOtherUserIDsWithChats) {
 	// 	const userDocumentReference = doc(db, `users/${userID}`);
@@ -204,7 +193,6 @@ export async function getServerSideProps(context) {
 	// 	const userData = userSnapshot.data();
 	// 	allOtherUserDatasWithChats.push(userData);
 	// }
-
 	return {
 		props: {
 			usersArray,
