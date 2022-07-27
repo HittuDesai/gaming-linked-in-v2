@@ -16,7 +16,14 @@ import { useRecoilValue } from "recoil";
 import { userdata } from "../../../atoms/userAtom";
 
 import { db } from "../../../firebase";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	query,
+	where,
+} from "firebase/firestore";
 
 import { Search } from "@mui/icons-material";
 import { useRouter } from "next/router";
