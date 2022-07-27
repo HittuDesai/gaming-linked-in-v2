@@ -23,9 +23,17 @@ export function MessagesSection({ messages, height }) {
 					Begin the conversation
 				</Typography>
 			)}
-			{messages.map((message, index) => (
-				<Message key={index} message={message} />
-			))}
+			{messages.map((message, index) => {
+				let scrollIntoViewBool = false;
+				if (index + 1 === messages.length) scrollIntoViewBool = true;
+				return (
+					<Message
+						key={index}
+						message={message}
+						scrollIntoViewBool={scrollIntoViewBool}
+					/>
+				);
+			})}
 		</Stack>
 	);
 }

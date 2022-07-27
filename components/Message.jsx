@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
-
-import { useRecoilValue } from "recoil";
-import { userid } from "../atoms/userAtom";
 import { grey } from "@mui/material/colors";
 
-export function Message({ message }) {
+export function Message({ message, scrollIntoViewBool }) {
+	console.log(scrollIntoViewBool);
 	const [currentMessage, setCurrentMessage] = useState(message);
 
 	const messageTime = currentMessage.messageTime;
@@ -16,6 +14,13 @@ export function Message({ message }) {
 		undefined,
 		{ year: "numeric", month: "long", day: "numeric" }
 	);
+
+	const messageRef = useRef(null);
+	useEffect(() => {
+		if (!scrollIntoViewBool) return;
+		const messageElement = messageRef.current;
+		messageElement.scrollIntoView();
+	}, [messageRef]);
 
 	// const likedBy = currentMessage.likedBy;
 	// const [isCommentLiked, setIsCommentLiked] = useState(likedBy?.includes(currentUserID));
@@ -45,6 +50,7 @@ export function Message({ message }) {
 			alignItems="flex-end"
 			justifyContent="center"
 			sx={{ paddingLeft: "8rem" }}
+			ref={messageRef}
 		>
 			<Box
 				sx={{
@@ -55,7 +61,7 @@ export function Message({ message }) {
 				}}
 			>
 				<Typography variant="caption" fontSize="0.9rem">
-					{currentMessage.messageText}
+					{message.messageText}
 				</Typography>
 			</Box>
 			<Box>

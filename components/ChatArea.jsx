@@ -33,6 +33,8 @@ export function ChatArea({ messages, requestedUserData, loggedInUserData }) {
 	};
 
 	const handleSendText = () => {
+		if (chatText === "") return;
+
 		const loggedInUserChatDocument = doc(
 			db,
 			`users/${loggedInUserData.uid}/chats/${requestedUserData.uid}`
