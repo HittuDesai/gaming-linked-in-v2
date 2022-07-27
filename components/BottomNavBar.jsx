@@ -11,14 +11,11 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userid, username } from "../atoms/userAtom";
 import { wantsToUploadBool } from "../atoms/actionsAtom";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
 
 export function BottomNavBar() {
 	const router = useRouter();
 	const routerPath = router.asPath;
 	const pathParts = routerPath.split("/");
-	if (pathParts.includes("chats") && pathParts.length === 4) return <></>;
 
 	const setWantsToUpload = useSetRecoilState(wantsToUploadBool);
 	const currentUserID = useRecoilValue(userid);
@@ -53,6 +50,7 @@ export function BottomNavBar() {
 		}
 	};
 
+	if (pathParts.includes("chats") && pathParts.length === 4) return <></>;
 	return (
 		<>
 			{currentUserID && (

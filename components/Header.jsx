@@ -1,43 +1,27 @@
 import { useEffect } from "react";
-import { AppBar, Button, Grid, IconButton, Typography } from "@mui/material";
+import { AppBar, Button, Grid, Typography } from "@mui/material";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
-import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
-import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
-import HomeIcon from "@mui/icons-material/Home";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import LogoutIcon from "@mui/icons-material/Logout";
 
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { wantsToSigninBool, wantsToSignupBool } from "../atoms/loginAtom";
-import {
-	userdata,
-	userid,
-	username,
-	wantsToSeeProfileBool,
-} from "../atoms/userAtom";
-import { wantsToUploadBool } from "../atoms/actionsAtom";
+import { userdata, userid, username } from "../atoms/userAtom";
 
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { useRouter } from "next/router";
-import { Box } from "@mui/system";
 import { doc, getDoc } from "firebase/firestore";
 
 export function Header() {
 	const router = useRouter();
 	const setCurrentUserData = useSetRecoilState(userdata);
-	const setWantsToUpload = useSetRecoilState(wantsToUploadBool);
 	const [currentUserID, setCurrentUserID] = useRecoilState(userid);
 	const [currentUsername, setCurrentUsername] = useRecoilState(username);
-	const [wantsToSeeProfile, setWantsToSeeProfile] = useRecoilState(
-		wantsToSeeProfileBool
-	);
 	const [wantsToSignin, setWantsToSignin] = useRecoilState(wantsToSigninBool);
 	const [wantsToSignup, setWantsToSignup] = useRecoilState(wantsToSignupBool);
 
 	useEffect(() => {
 		router.push(`/${currentUsername}`);
-	}, [currentUsername]);
+	}, [currentUsername, router]);
 
 	onAuthStateChanged(auth, userCredentials => {
 		if (!userCredentials) {
@@ -99,15 +83,8 @@ export function Header() {
 		</AppBar>
 	);
 
-	const handleSignOut = () => {
-		signOut(auth).then(() => {
-			router.push("/");
-		});
-	};
-
 	const currentAsPath = router.asPath;
 	const individualPaths = currentAsPath.split("/");
-	const isSeeingFeed = individualPaths.pop() === "feed";
 
 	const HeaderWithSession = () => (
 		<AppBar position="static">

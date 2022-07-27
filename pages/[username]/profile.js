@@ -38,9 +38,6 @@ export default function UserProfilePage({ uploadsArray, requestedUserData }) {
 			</Grid>
 		);
 
-	const loggedInUsername = useRecoilValue(username);
-	const requestedUsername = requestedUserData.username;
-
 	return (
 		<>
 			{uploadsArray ? (

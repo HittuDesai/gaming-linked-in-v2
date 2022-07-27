@@ -19,7 +19,7 @@ export function Message({ message, scrollIntoViewBool }) {
 		if (!scrollIntoViewBool) return;
 		const messageElement = messageRef.current;
 		messageElement.scrollIntoView();
-	}, [messageRef]);
+	}, [messageRef, scrollIntoViewBool]);
 
 	// const likedBy = currentMessage.likedBy;
 	// const [isCommentLiked, setIsCommentLiked] = useState(likedBy?.includes(currentUserID));

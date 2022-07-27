@@ -3,9 +3,7 @@ import { ChatsPageUser } from "../../../components/ChatsPageUser";
 import {
 	CircularProgress,
 	Grid,
-	IconButton,
 	TextField,
-	InputAdornment,
 	Typography,
 	Autocomplete,
 	Box,
@@ -14,12 +12,12 @@ import {
 import ErrorIcon from "@mui/icons-material/Error";
 
 import { useRecoilValue } from "recoil";
-import { userdata, username } from "../../../atoms/userAtom";
+import { userdata } from "../../../atoms/userAtom";
 
 import { db } from "../../../firebase";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
-import { Cancel, Search } from "@mui/icons-material";
+import { Search } from "@mui/icons-material";
 import { useRouter } from "next/router";
 
 export default function UserChatsPage({
@@ -27,6 +25,7 @@ export default function UserChatsPage({
 	requestedUserData,
 	allChatsUsers,
 }) {
+	const router = useRouter();
 	const loggedInUserData = useRecoilValue(userdata);
 	const loggedInUserID = loggedInUserData?.uid;
 	const requestedUserID = requestedUserData.uid;
@@ -92,7 +91,6 @@ export default function UserChatsPage({
 			</Grid>
 		);
 
-	const router = useRouter();
 	return (
 		<>
 			<Grid container direction="column" padding="0 1rem">
