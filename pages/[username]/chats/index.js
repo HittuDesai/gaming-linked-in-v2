@@ -16,14 +16,7 @@ import { useRecoilValue } from "recoil";
 import { userdata } from "../../../atoms/userAtom";
 
 import { db } from "../../../firebase";
-import {
-	collection,
-	doc,
-	getDoc,
-	getDocs,
-	query,
-	where,
-} from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 import { Search } from "@mui/icons-material";
 import { useRouter } from "next/router";
@@ -155,9 +148,9 @@ export default function UserChatsPage({
 					popupIcon={<Search />}
 					sx={{ width: "100%" }}
 				/>
-				{/* {allChatsUsers.map((user, index) => (
+				{allChatsUsers.map((user, index) => (
 					<ChatsPageUser key={index} user={user} />
-				))} */}
+				))}
 			</Grid>
 		</HeaderAndBottomAdder>
 	);
@@ -166,6 +159,7 @@ export default function UserChatsPage({
 export async function getServerSideProps(context) {
 	const { params } = context;
 	const { username } = params;
+
 	let usersArray = [];
 	let currentUserData = null;
 	const usersCollectionReference = collection(db, "users");
@@ -175,29 +169,32 @@ export async function getServerSideProps(context) {
 		if (userData.username === username) currentUserData = userData;
 		else usersArray.push(userData);
 	});
-	// const currentUserID = currentUserData.uid;
-	// const chatsCollectionReference = collection(
-	// 	db,
-	// 	`users/${currentUserID}/chats`
-	// );
-	// const chatsSnapshot = getDocs(chatsCollectionReference);
-	// let allOtherUserIDsWithChats = [];
-	// (await chatsSnapshot).forEach(chatDocument => {
-	// 	const chatID = chatDocument.id;
-	// 	allOtherUserIDsWithChats.push(chatID);
-	// });
-	// let allOtherUserDatasWithChats = [];
-	// for (const userID of allOtherUserIDsWithChats) {
-	// 	const userDocumentReference = doc(db, `users/${userID}`);
-	// 	const userSnapshot = await getDoc(userDocumentReference);
-	// 	const userData = userSnapshot.data();
-	// 	allOtherUserDatasWithChats.push(userData);
-	// }
+
+	const currentUserID = currentUserData.uid;
+	const chatsCollectionReference = collection(
+		db,
+		`users/${currentUserID}/chats`
+	);
+	const chatsSnapshot = getDocs(chatsCollectionReference);
+	let allOtherUserIDsWithChats = [];
+	(await chatsSnapshot).forEach(chatDocument => {
+		const chatID = chatDocument.id;
+		allOtherUserIDsWithChats.push(chatID);
+	});
+
+	let allOtherUserDatasWithChats = [];
+	for (const userID of allOtherUserIDsWithChats) {
+		const userDocumentReference = doc(db, `users/${userID}`);
+		const userSnapshot = await getDoc(userDocumentReference);
+		const userData = userSnapshot.data();
+		allOtherUserDatasWithChats.push(userData);
+	}
+
 	return {
 		props: {
 			usersArray,
 			requestedUserData: currentUserData,
-			// allChatsUsers: allOtherUserDatasWithChats,
+			allChatsUsers: allOtherUserDatasWithChats,
 		},
 	};
 }
