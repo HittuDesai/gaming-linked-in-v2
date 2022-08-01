@@ -15,7 +15,6 @@ export default function IndexPage() {
 
 	const router = useRouter();
 	useEffect(() => {
-		console.log("running");
 		onAuthStateChanged(auth, userCredentials => {
 			if (!userCredentials) {
 				router.push("/");
