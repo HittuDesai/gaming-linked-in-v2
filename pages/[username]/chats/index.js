@@ -26,6 +26,7 @@ export default function UserChatsPage({
 	requestedUserData,
 	allChatsUsers,
 	username,
+	nothing,
 }) {
 	// const router = useRouter();
 	// const loggedInUserData = useRecoilValue(userdata);
@@ -155,12 +156,12 @@ export default function UserChatsPage({
 	// 		</Grid>
 	// 	</HeaderAndBottomAdder>
 	// );
-	return <>Hello {username}</>;
+	return <>Hello {nothing}</>;
 }
 
 export async function getServerSideProps(context) {
-	const { params } = context;
-	const { username } = params;
+	// const { params } = context;
+	// const { username } = params;
 
 	// let usersArray = [];
 	// let currentUserData = null;
@@ -194,10 +195,11 @@ export async function getServerSideProps(context) {
 
 	return {
 		props: {
-			username,
+			// username,
 			// usersArray,
 			// requestedUserData: currentUserData,
 			// allChatsUsers: allOtherUserDatasWithChats,
+			nothing: "nothing",
 		},
 	};
 }
