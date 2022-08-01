@@ -1,6 +1,5 @@
 import { HeaderAndBottomAdder } from "../../components/HeaderAndBottomAdder";
 import { Feed } from "../../components/Feed";
-import { UploadModal } from "../../components/UploadModal";
 
 import { db } from "../../firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -19,7 +18,6 @@ export default function UserHomePage({ userFound }) {
 					justifyContent="center"
 					sx={{ width: "100vw", height: "100vh" }}
 				>
-					<UploadModal />
 					<Feed />
 				</Grid>
 			) : (

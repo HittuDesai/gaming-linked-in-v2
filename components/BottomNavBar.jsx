@@ -17,7 +17,6 @@ export function BottomNavBar({ dummyHeightSetter }) {
 	const routerPath = router.asPath;
 	const pathParts = routerPath.split("/");
 
-	const setWantsToUpload = useSetRecoilState(wantsToUploadBool);
 	const currentUserID = useRecoilValue(userid);
 	const currentUsername = useRecoilValue(username);
 
@@ -36,7 +35,7 @@ export function BottomNavBar({ dummyHeightSetter }) {
 		setBottomBarValue(newValue);
 		switch (newValue) {
 			case "upload":
-				setWantsToUpload(true);
+				router.push(`/${currentUsername}/upload`);
 				break;
 
 			case "explore":

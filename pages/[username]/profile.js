@@ -1,7 +1,6 @@
 import { HeaderAndBottomAdder } from "../../components/HeaderAndBottomAdder";
 import { ProfileUserData } from "../../components/ProfileUserData";
 import { Post } from "../../components/Post";
-import { UploadModal } from "../../components/UploadModal";
 import { CircularProgress, Grid, Typography } from "@mui/material";
 
 import { db } from "../../firebase";
@@ -48,7 +47,6 @@ export default function UserProfilePage({ uploadsArray, requestedUserData }) {
 							return <Post key={index} post={post} />;
 						})}
 					</Grid>
-					<UploadModal />
 				</>
 			) : (
 				<Grid
