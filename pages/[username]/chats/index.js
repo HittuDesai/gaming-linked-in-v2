@@ -90,7 +90,12 @@ export default function UserChatsPage({
 		);
 	return (
 		<HeaderAndBottomAdder>
-			<Grid container direction="column" padding="0 1rem">
+			<Grid
+				container
+				direction="column"
+				padding="0 1rem"
+				paddingTop="1rem"
+			>
 				<Autocomplete
 					options={usersArray}
 					renderInput={params => (
@@ -153,8 +158,12 @@ export default function UserChatsPage({
 }
 
 export async function getServerSideProps(context) {
-	const { params } = context;
+	const { params, res } = context;
 	const { username } = params;
+	res.setHeader(
+		"Cache-Control",
+		"public, s-maxage=30, stale-while-revalidate=60"
+	);
 
 	let usersArray = [];
 	let currentUserData = null;

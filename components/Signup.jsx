@@ -62,7 +62,7 @@ export function SignUp() {
 					setSignupPasswordError("");
 					setSignupUsernameError("");
 					setWantsToSignUp(false);
-					router.replace(`/fetch/${newUserID}`);
+					router.replace(`/${signupUsername}`);
 				});
 			})
 			.catch(error => {

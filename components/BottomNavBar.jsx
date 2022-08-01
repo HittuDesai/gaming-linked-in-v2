@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
@@ -12,7 +12,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userid, username } from "../atoms/userAtom";
 import { wantsToUploadBool } from "../atoms/actionsAtom";
 
-export function BottomNavBar() {
+export function BottomNavBar({ dummyHeightSetter }) {
 	const router = useRouter();
 	const routerPath = router.asPath;
 	const pathParts = routerPath.split("/");
@@ -21,7 +21,17 @@ export function BottomNavBar() {
 	const currentUserID = useRecoilValue(userid);
 	const currentUsername = useRecoilValue(username);
 
-	const [bottomBarValue, setBottomBarValue] = useState("home");
+	const bottomBarRef = useRef(null);
+	const [bottomBarValue, setBottomBarValue] = useState("feed");
+	useEffect(() => {
+		const currentAsPath = router.asPath;
+		const asPathArray = currentAsPath.split("/");
+		const pathEndsWith = asPathArray[asPathArray.length - 1];
+		setBottomBarValue(pathEndsWith);
+
+		dummyHeightSetter(bottomBarRef?.current?.clientHeight);
+	}, [router, bottomBarRef]);
+
 	const handleBottomBarChange = (event, newValue) => {
 		setBottomBarValue(newValue);
 		switch (newValue) {
@@ -33,7 +43,7 @@ export function BottomNavBar() {
 				router.push(`/${currentUsername}/explore`);
 				break;
 
-			case "home":
+			case "feed":
 				router.push(`/${currentUsername}`);
 				break;
 
@@ -63,6 +73,7 @@ export function BottomNavBar() {
 						padding: "0.5rem 2rem",
 					}}
 					elevation={0}
+					ref={bottomBarRef}
 				>
 					<BottomNavigation
 						value={bottomBarValue}
@@ -77,7 +88,7 @@ export function BottomNavBar() {
 							icon={<PeopleAltIcon />}
 						/>
 						<BottomNavigationAction
-							value="home"
+							value="feed"
 							icon={<HomeIcon />}
 						/>
 						<BottomNavigationAction

@@ -78,7 +78,12 @@ export default function UserFeedPage({ usersArray, requestedUserData }) {
 
 	return (
 		<HeaderAndBottomAdder>
-			<Grid container direction="column" padding="0 1rem">
+			<Grid
+				container
+				direction="column"
+				padding="0 1rem"
+				paddingTop="1rem"
+			>
 				{usersArray.map((user, index) => (
 					<ExplorePageUser key={index} user={user} />
 				))}

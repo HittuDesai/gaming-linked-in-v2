@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { Post } from "../../components/Post";
 import { UploadModal } from "../../components/UploadModal";
 import { HeaderAndBottomAdder } from "../../components/HeaderAndBottomAdder";
@@ -5,7 +7,7 @@ import { CircularProgress, Grid, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 
 import { useRecoilValue } from "recoil";
-import { userdata, userid } from "../../atoms/userAtom";
+import { userdata } from "../../atoms/userAtom";
 
 import { db } from "../../firebase";
 import {
@@ -21,6 +23,21 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 	const loggedInUserData = useRecoilValue(userdata);
 	const loggedInUserID = loggedInUserData?.uid;
 	const requestedUserID = requestedUserData.uid;
+
+	const router = useRouter();
+	useEffect(() => {
+		const hasRedirectionHappened = localStorage.getItem(
+			"hasRedirectionHappened"
+		);
+		if (hasRedirectionHappened) {
+			localStorage.removeItem("hasRedirectionHappened");
+			return;
+		}
+		if (window.performance.getEntries()[0].type === "reload") {
+			localStorage.setItem("hasRedirectionHappened", true);
+			router.push("/");
+		}
+	}, []);
 
 	if (!feedArray)
 		return (
@@ -86,7 +103,12 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 	return (
 		<HeaderAndBottomAdder>
 			BRUH
-			<Grid container direction="column">
+			<Grid
+				container
+				direction="column"
+				padding="0 1rem"
+				paddingTop="1rem"
+			>
 				{feedArray.map((post, index) => {
 					return <Post key={index} post={post} />;
 				})}
