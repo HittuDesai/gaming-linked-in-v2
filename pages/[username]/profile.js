@@ -3,7 +3,7 @@ import { ProfileUserData } from "../../components/ProfileUserData";
 import { Post } from "../../components/Post";
 import { CircularProgress, Grid, Typography } from "@mui/material";
 
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import {
 	collection,
 	doc,
@@ -84,6 +84,17 @@ export async function getServerSideProps(context) {
 	);
 	const querySnapshot = await getDocs(usernameQuery);
 	const currentUserData = querySnapshot.docs[0].data();
+
+	// const currentUserID = currentUserData.uid;
+	// const loggedInUserID = auth.currentUser?.uid;
+	// if (currentUserID !== loggedInUserID)
+	// 	return {
+	// 		redirect: {
+	// 			destination: "/permissions",
+	// 			permanent: false,
+	// 		},
+	// 	};
+
 	const postIDs = currentUserData.uploads;
 
 	for (const postID of postIDs) {

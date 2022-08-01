@@ -17,9 +17,16 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { db } from "../../firebase";
-import { collection } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useSetRecoilState } from "recoil";
+import { userdata } from "../../atoms/userAtom";
 
 export default function UserFeedPage({ requestedUserData }) {
+	const setLoggedInUserData = useSetRecoilState(userdata);
+	useEffect(() => {
+		setLoggedInUserData(requestedUserData);
+	}, []);
+
 	const router = useRouter();
 	const [file, setFile] = useState(null);
 	const [caption, setCaption] = useState("");
@@ -412,17 +419,17 @@ export default function UserFeedPage({ requestedUserData }) {
 	);
 }
 
-// export async function getServerSideProps(context) {
-// 	const { params } = context;
-// 	const { username } = params;
+export async function getServerSideProps(context) {
+	const { params } = context;
+	const { username } = params;
 
-// 	const usersCollectionReference = collection(db, "users");
-// 	const usernameQuery = query(
-// 		usersCollectionReference,
-// 		where("username", "==", username)
-// 	);
-// 	const querySnapshot = await getDocs(usernameQuery);
-// 	const currentUserData = querySnapshot.docs[0].data();
+	const usersCollectionReference = collection(db, "users");
+	const usernameQuery = query(
+		usersCollectionReference,
+		where("username", "==", username)
+	);
+	const querySnapshot = await getDocs(usernameQuery);
+	const currentUserData = querySnapshot.docs[0].data();
 
-// 	return { props: { requestedUserData: currentUserData } };
-// }
+	return { props: { requestedUserData: currentUserData } };
+}

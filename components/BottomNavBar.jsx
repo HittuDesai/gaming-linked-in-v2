@@ -8,17 +8,16 @@ import HomeIcon from "@mui/icons-material/Home";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { userid, username } from "../atoms/userAtom";
-import { wantsToUploadBool } from "../atoms/actionsAtom";
+import { useRecoilValue } from "recoil";
+import { userdata } from "../atoms/userAtom";
 
 export function BottomNavBar({ dummyHeightSetter }) {
 	const router = useRouter();
 	const routerPath = router.asPath;
 	const pathParts = routerPath.split("/");
 
-	const currentUserID = useRecoilValue(userid);
-	const currentUsername = useRecoilValue(username);
+	const loggedInUserData = useRecoilValue(userdata);
+	const loggedInUsername = loggedInUserData?.username;
 
 	const bottomBarRef = useRef(null);
 	const [bottomBarValue, setBottomBarValue] = useState("feed");
@@ -35,23 +34,23 @@ export function BottomNavBar({ dummyHeightSetter }) {
 		setBottomBarValue(newValue);
 		switch (newValue) {
 			case "upload":
-				router.push(`/${currentUsername}/upload`);
+				router.push(`/${loggedInUsername}/upload`);
 				break;
 
 			case "explore":
-				router.push(`/${currentUsername}/explore`);
+				router.push(`/${loggedInUsername}/explore`);
 				break;
 
 			case "feed":
-				router.push(`/${currentUsername}`);
+				router.push(`/${loggedInUsername}`);
 				break;
 
 			case "chats":
-				router.push(`/${currentUsername}/chats`);
+				router.push(`/${loggedInUsername}/chats`);
 				break;
 
 			case "profile":
-				router.push(`/${currentUsername}/profile`);
+				router.push(`/${loggedInUsername}/profile`);
 				break;
 
 			default:
@@ -62,7 +61,7 @@ export function BottomNavBar({ dummyHeightSetter }) {
 	if (pathParts.includes("chats") && pathParts.length === 4) return <></>;
 	return (
 		<>
-			{currentUserID && (
+			{loggedInUserData && (
 				<Paper
 					sx={{
 						position: "fixed",

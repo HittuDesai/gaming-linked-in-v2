@@ -8,7 +8,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import { useRecoilValue } from "recoil";
 import { userdata } from "../../atoms/userAtom";
 
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import {
 	collection,
 	getDoc,
@@ -122,15 +122,6 @@ export async function getServerSideProps(context) {
 	const { referer } = headers;
 	const { username } = params;
 
-	// if(!referer) {
-	//     return {
-	//         redirect: {
-	//             destination: `/${username}`,
-	//             permanent: false,
-	//         }
-	//     }
-	// }
-
 	let feedArray = [];
 	const usersCollectionReference = collection(db, "users");
 	const usernameQuery = query(
@@ -140,6 +131,15 @@ export async function getServerSideProps(context) {
 	const querySnapshot = await getDocs(usernameQuery);
 	const currentUserData = querySnapshot.docs[0].data();
 	const currentUserID = currentUserData.uid;
+
+	// const loggedInUserID = auth.currentUser.uid;
+	// if (currentUserID !== loggedInUserID)
+	// 	return {
+	// 		redirect: {
+	// 			destination: "/navigation/permissions",
+	// 			permanent: true,
+	// 		},
+	// 	};
 
 	const allPostsCollectionReference = collection(db, "/posts");
 	const feedQuery = query(
