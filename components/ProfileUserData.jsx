@@ -126,18 +126,29 @@ export function ProfileUserData({ requestedUserData }) {
 			>
 				<Grid item flexGrow={1}>
 					{requestedUserID === loggedInUserID ? (
-						<Button
-							fullWidth
-							variant="contained"
-							sx={{ margin: "1.5rem 0" }}
-							onClick={() =>
-								console.warn(
-									"CANNOT EDIT FORM IN THIS VERSION OF THE APP"
-								)
-							}
-						>
-							Edit Profile
-						</Button>
+						<>
+							<Button
+								fullWidth
+								variant="contained"
+								sx={{ margin: "1.5rem 0" }}
+								onClick={() =>
+									console.warn(
+										"CANNOT EDIT FORM IN THIS VERSION OF THE APP"
+									)
+								}
+							>
+								Edit Profile
+							</Button>
+							<Button
+								color="error"
+								variant="contained"
+								onClick={() => {
+									signOut(auth).then(() => router.push("/"));
+								}}
+							>
+								<LogoutIcon />
+							</Button>
+						</>
 					) : (
 						<>
 							{loggedInUserFollowing?.includes(
@@ -165,17 +176,6 @@ export function ProfileUserData({ requestedUserData }) {
 							)}
 						</>
 					)}
-				</Grid>
-				<Grid item>
-					<Button
-						color="error"
-						variant="contained"
-						onClick={() => {
-							signOut(auth).then(() => router.push("/"));
-						}}
-					>
-						<LogoutIcon />
-					</Button>
 				</Grid>
 			</Grid>
 			<Divider>

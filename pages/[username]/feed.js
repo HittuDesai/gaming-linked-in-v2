@@ -22,6 +22,9 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 	const loggedInUserData = useRecoilValue(userdata);
 	const loggedInUserID = loggedInUserData?.uid;
 	const requestedUserID = requestedUserData.uid;
+	useEffect(() => {
+		if (!loggedInUserID) router.push("/");
+	}, []);
 
 	const router = useRouter();
 	useEffect(() => {
@@ -58,7 +61,7 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 			</Grid>
 		);
 
-	if (!loggedInUserID)
+	if (!loggedInUserID) {
 		return (
 			<Grid
 				container
@@ -77,6 +80,7 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 				</Typography>
 			</Grid>
 		);
+	}
 
 	if (requestedUserID !== loggedInUserID)
 		return (
@@ -101,7 +105,6 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 
 	return (
 		<HeaderAndBottomAdder>
-			BRUH
 			<Grid
 				container
 				direction="column"
@@ -154,30 +157,6 @@ export async function getServerSideProps(context) {
 		const postData = postDocument.data();
 		postData.time = postData.time.toJSON();
 		postData.postID = postID;
-
-		let comments = [];
-		const postCommentsCollection = collection(
-			db,
-			`/posts/${postID}/comments`
-		);
-		const commentsQueryConstraint = orderBy("commentTime");
-		const commentsQuery = query(
-			postCommentsCollection,
-			commentsQueryConstraint
-		);
-		const allCommentsSnapshot = await getDocs(commentsQuery);
-		const arrayOfComments = allCommentsSnapshot.docs;
-		for (const commentDocument of arrayOfComments) {
-			const commentDocumentID = commentDocument.id;
-			const commentDocumentReference = commentDocument.ref;
-			const commentSnapshot = await getDoc(commentDocumentReference);
-			const commentData = commentSnapshot.data();
-			commentData.commentID = commentDocumentID;
-			commentData.commentTime = commentData.commentTime.toJSON();
-			comments.push(commentData);
-		}
-		postData.comments = comments;
-
 		feedArray.push(postData);
 	}
 

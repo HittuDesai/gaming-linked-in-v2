@@ -268,12 +268,11 @@ export function Post({ post }) {
 						</IconButton>
 					</Grid>
 				</CardActions>
-				<Collapse in={showCommentsSection}>
-					<CommentSection
-						postID={postDocumentID}
-						comments={post.comments}
-					/>
-				</Collapse>
+				{showCommentsSection && (
+					<Collapse in={showCommentsSection}>
+						<CommentSection postID={postDocumentID} />
+					</Collapse>
+				)}
 			</Paper>
 		</Card>
 	);

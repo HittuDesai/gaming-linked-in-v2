@@ -10,7 +10,7 @@ export const HeaderAndBottomAdder = ({ children }) => {
 			<Header />
 			{children}
 			<div style={{ visibility: "hidden", height: dummyHeight }}>
-				BRUH
+				Dummy Content
 			</div>
 			<BottomNavBar dummyHeightSetter={dummyHeightSetter} />
 		</>

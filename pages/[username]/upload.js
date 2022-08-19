@@ -51,7 +51,7 @@ export default function UserFeedPage({ requestedUserData }) {
 
 	const handleOnPost = () => {
 		if (file === null || caption === "") {
-			console.log("BRUH");
+			console.log("You need to select a file and write a caption");
 			return;
 		}
 

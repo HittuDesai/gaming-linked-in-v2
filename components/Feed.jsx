@@ -1,3 +1,3 @@
 export function Feed() {
-	return <>BRUH</>;
+	return <></>;
 }

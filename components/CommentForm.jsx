@@ -9,7 +9,7 @@ import { username } from "../atoms/userAtom";
 import { LoadingButton } from "@mui/lab";
 import { useRouter } from "next/router";
 
-export function CommentForm({ postID }) {
+export function CommentForm({ postID, rerenderComments }) {
 	const router = useRouter();
 	const [commentText, setCommentText] = useState("");
 	const [isPostingComment, setIsPostingComment] = useState(false);
@@ -32,7 +32,8 @@ export function CommentForm({ postID }) {
 			.then(() => {
 				setIsPostingComment(false);
 				setCommentText("");
-				router.push(router.asPath);
+				// router.push(router.asPath);
+				rerenderComments();
 			})
 			.catch(error => console.log(error));
 	};
