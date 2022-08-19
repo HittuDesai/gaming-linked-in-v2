@@ -22,11 +22,11 @@ export default function UserFeedPage({ feedArray, requestedUserData }) {
 	const loggedInUserData = useRecoilValue(userdata);
 	const loggedInUserID = loggedInUserData?.uid;
 	const requestedUserID = requestedUserData.uid;
+	const router = useRouter();
 	useEffect(() => {
 		if (!loggedInUserID) router.push("/");
 	}, []);
 
-	const router = useRouter();
 	useEffect(() => {
 		const hasRedirectionHappened = localStorage.getItem(
 			"hasRedirectionHappened"
@@ -157,6 +157,13 @@ export async function getServerSideProps(context) {
 		const postData = postDocument.data();
 		postData.time = postData.time.toJSON();
 		postData.postID = postID;
+		const postCommentsCollection = collection(
+			db,
+			`/posts/${postID}/comments`
+		);
+		const postCommentsSnapshot = await getDocs(postCommentsCollection);
+		const numberOfComments = postCommentsSnapshot.docs.length;
+		postData.numberOfComments = numberOfComments;
 		feedArray.push(postData);
 	}
 

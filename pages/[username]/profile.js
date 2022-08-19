@@ -13,8 +13,19 @@ import {
 	query,
 	where,
 } from "firebase/firestore";
+import { useRecoilValue } from "recoil";
+import { userdata } from "../../atoms/userAtom";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function UserProfilePage({ uploadsArray, requestedUserData }) {
+	const loggedInUserData = useRecoilValue(userdata);
+	const loggedInUserID = loggedInUserData?.uid;
+	const router = useRouter();
+	useEffect(() => {
+		if (!loggedInUserID) router.push("/");
+	}, []);
+
 	if (!uploadsArray)
 		return (
 			<Grid

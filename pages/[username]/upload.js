@@ -19,16 +19,17 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { db } from "../../firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { userdata } from "../../atoms/userAtom";
 
-export default function UserFeedPage({ requestedUserData }) {
-	const setLoggedInUserData = useSetRecoilState(userdata);
+export default function UserFeedPage() {
+	const [loggedInUserData, setLoggedInUserData] = useRecoilState(userdata);
+	const loggedInUserID = loggedInUserData?.uid;
+	const router = useRouter();
 	useEffect(() => {
-		setLoggedInUserData(requestedUserData);
+		if (!loggedInUserID) router.push("/");
 	}, []);
 
-	const router = useRouter();
 	const [file, setFile] = useState(null);
 	const [caption, setCaption] = useState("");
 	const [altText, setAltText] = useState("");

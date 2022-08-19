@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Comment } from "./Comment";
 import { CommentForm } from "./CommentForm";
 
-import { Stack, Typography } from "@mui/material";
+import { CircularProgress, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
 import { db } from "../firebase";
@@ -16,6 +16,7 @@ import {
 
 export function CommentSection({ postID }) {
 	const [comments, setComments] = useState([]);
+	const [commentsFetched, setCommentsFetched] = useState(false);
 	const [rerenderDummyValue, setRerenderDummyValue] = useState(0);
 	const rerenderComments = () => {
 		setRerenderDummyValue(previousValue => previousValue + 1);
@@ -43,31 +44,52 @@ export function CommentSection({ postID }) {
 				}
 				commentsArray.sort((a, b) => b.commentTime - a.commentTime);
 			})
-			.then(() => setComments(commentsArray));
+			.then(() => {
+				setComments(commentsArray);
+				setCommentsFetched(true);
+			});
 	}, [rerenderDummyValue]);
 
 	return (
 		<Stack
-			sx={{ marginTop: "1rem", overflow: "hidden", overflowY: "scroll" }}
+			alignItems="center"
+			justifyContent="center"
+			sx={{
+				marginTop: "1rem",
+				overflowY: "scroll",
+				// maxHeight: "10rem",
+			}}
 		>
-			{comments.length === 0 && (
-				<Typography
-					variant="caption"
-					fontStyle="italic"
-					color={grey[600]}
-					sx={{ paddingRight: "2rem" }}
-				>
-					No comments yet
-				</Typography>
+			{commentsFetched ? (
+				<>
+					{comments.length === 0 && (
+						<Typography
+							variant="caption"
+							fontStyle="italic"
+							color={grey[600]}
+							sx={{ paddingRight: "2rem" }}
+						>
+							No comments yet
+						</Typography>
+					)}
+					{comments.map(comment => (
+						<Comment
+							key={comment.commentID}
+							comment={comment}
+							postID={postID}
+						/>
+					))}
+					<CommentForm
+						postID={postID}
+						rerenderComments={rerenderComments}
+					/>
+				</>
+			) : (
+				<>
+					<CircularProgress />
+					<Typography>Loading the comments</Typography>
+				</>
 			)}
-			{comments.map(comment => (
-				<Comment
-					key={comment.commentID}
-					comment={comment}
-					postID={postID}
-				/>
-			))}
-			<CommentForm postID={postID} rerenderComments={rerenderComments} />
 		</Stack>
 	);
 }

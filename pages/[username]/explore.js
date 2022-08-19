@@ -9,11 +9,17 @@ import { userdata } from "../../atoms/userAtom";
 
 import { db } from "../../firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function UserFeedPage({ usersArray, requestedUserData }) {
 	const loggedInUserData = useRecoilValue(userdata);
 	const loggedInUserID = loggedInUserData?.uid;
 	const requestedUserID = requestedUserData.uid;
+	const router = useRouter();
+	useEffect(() => {
+		if (!loggedInUserID) router.push("/");
+	}, []);
 
 	if (!usersArray)
 		return (

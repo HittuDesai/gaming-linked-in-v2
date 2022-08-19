@@ -22,6 +22,11 @@ export function BottomNavBar({ dummyHeightSetter }) {
 	const bottomBarRef = useRef(null);
 	const [bottomBarValue, setBottomBarValue] = useState("feed");
 	useEffect(() => {
+		const requestedUsername = router?.query?.username;
+		if (requestedUsername !== loggedInUsername) {
+			setBottomBarValue("none");
+			return;
+		}
 		const currentAsPath = router.asPath;
 		const asPathArray = currentAsPath.split("/");
 		const pathEndsWith = asPathArray[asPathArray.length - 1];
