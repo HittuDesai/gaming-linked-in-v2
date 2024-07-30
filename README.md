@@ -1,34 +1,17 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Instagram clone with added functionality like upload posts, comment on posts, like/dislike posts and chat one-on-one with other users.
 
-## Getting Started
+This project focused on building more on the BE aspects of full-stack development.
 
-First, run the development server:
+It uses Next.js for routing and server-side data-fetching from a Firebase Cloud Store and Cloud Storage, and uses MaterialUI for the front-end with Recoil for global state management.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+Features built in this project were more complete end-to-end since I had better grasp of the technologies being used, and I could devote all my energy into developing a nice app versus trying to learn underlying technologies for the first time.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Some of the more advanced features:
+1. **User Feed**: Shows all user posts for now, next step in this project was to build a feed recommendation algorithm
+2. **User Profile Page**: Shows a section containing basic profile data like following/followers and message button, and their list of uploads.
+3. **Uploading Posts**: Users can now upload posts with more details like caption, tags, one piece of media (photos only IIRC)
+4. **Interacting with Posts**: Users can like posts, comment on posts, and even bookmark them.
+5. **Comments**: Users can comment on posts, and reply to other comments too to create a thread. Users can even like comments.
+6. **Messaging**: Users can send a direct message to other users. No groups for now, however, there's checks for who one can message, and users can even search for users they want to message.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Overall, this was a more complex project with more BE involvement than its predecssor (https://github.com/hitarthdesai/instagram-v1), however, I no longer plan to maintain this project amongst other commitments.
